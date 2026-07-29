@@ -1,16 +1,29 @@
 from rest_framework import serializers
 
+from apps.accounts.models import User
+
 from .models import Project
+
+
+class ProjectOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'first_name', 'last_name']
+        read_only_fields = fields
 
 
 class ProjectSerializer(serializers.ModelSerializer):
     total_cost = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
     roi_percent = serializers.DecimalField(max_digits=8, decimal_places=2, read_only=True, allow_null=True)
+    owner = ProjectOwnerSerializer(read_only=True)
+    owner_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='owner', write_only=True, required=False, allow_null=True,
+    )
 
     class Meta:
         model = Project
         fields = [
-            'id', 'name', 'status', 'description',
+            'id', 'name', 'status', 'description', 'owner', 'owner_id',
             'location', 'latitude', 'longitude',
             'master_plan_url', 'map_url', 'image_urls', 'video_urls', 'nearby_services',
             'total_area_sqm',

@@ -12,6 +12,12 @@ function formatDate(value: string | null) {
   return value ? new Date(value).toLocaleDateString('en-GB') : '—'
 }
 
+function formatOwnerName(owner: { email: string; first_name: string; last_name: string } | null) {
+  if (!owner) return 'Unassigned'
+  const name = `${owner.first_name} ${owner.last_name}`.trim()
+  return name || owner.email
+}
+
 export function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -92,6 +98,10 @@ export function ProjectDetailPage() {
           <div>
             <p className="text-xs text-muted-foreground">Expected completion</p>
             <p className="font-medium text-foreground">{formatDate(project.expected_completion_date)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Owner</p>
+            <p className="font-medium text-foreground">{formatOwnerName(project.owner)}</p>
           </div>
         </CardContent>
       </Card>

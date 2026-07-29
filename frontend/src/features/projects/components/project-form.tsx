@@ -11,13 +11,17 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 
+import { useUsersQuery } from '../hooks/use-users'
 import { PROJECT_STATUS_LABELS, PROJECT_STATUSES, type ProjectInput } from '../types'
+
+const UNASSIGNED = 'unassigned'
 
 const projectFormSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255),
   status: z.enum(PROJECT_STATUSES),
   location: z.string().min(1, 'Location is required').max(255),
   description: z.string().max(2000).optional(),
+  owner_id: z.string().optional(),
   master_plan_url: z.union([z.string().url('Enter a valid URL'), z.literal('')]).optional(),
   total_area_sqm: z.number().positive('Area must be greater than 0'),
   acquisition_cost: z.number().nonnegative('Must be zero or more'),
@@ -37,6 +41,7 @@ interface ProjectFormProps {
 
 export function ProjectForm({ defaultValues, submitLabel, onSubmit }: ProjectFormProps) {
   const [formError, setFormError] = useState<string | null>(null)
+  const { data: users, isError: usersError } = useUsersQuery()
 
   const {
     register,
@@ -62,6 +67,7 @@ export function ProjectForm({ defaultValues, submitLabel, onSubmit }: ProjectFor
         status: values.status,
         location: values.location,
         description: values.description ?? '',
+        owner_id: values.owner_id || null,
         master_plan_url: values.master_plan_url ?? '',
         total_area_sqm: values.total_area_sqm,
         acquisition_cost: values.acquisition_cost,
@@ -108,6 +114,38 @@ export function ProjectForm({ defaultValues, submitLabel, onSubmit }: ProjectFor
               </Select>
             )}
           />
+        </div>
+
+        <div className="flex flex-col gap-1.5 sm:col-span-2">
+          <Label htmlFor="owner_id">Owner</Label>
+          <Controller
+            control={control}
+            name="owner_id"
+            render={({ field }) => (
+              <Select
+                value={field.value || UNASSIGNED}
+                onValueChange={(value) => field.onChange(value === UNASSIGNED ? '' : value)}
+                disabled={usersError}
+              >
+                <SelectTrigger id="owner_id">
+                  <SelectValue placeholder="Unassigned" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={UNASSIGNED}>Unassigned</SelectItem>
+                  {users?.map((user) => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.first_name || user.last_name ? `${user.first_name} ${user.last_name}`.trim() : user.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {usersError && (
+            <p className="text-xs text-muted-foreground">
+              You don't have access to the user directory, so you can't reassign the owner.
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col gap-1.5 sm:col-span-2">

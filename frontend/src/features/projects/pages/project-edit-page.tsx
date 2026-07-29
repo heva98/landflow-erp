@@ -23,6 +23,7 @@ export function ProjectEditPage() {
           status: project.status,
           location: project.location,
           description: project.description,
+          owner_id: project.owner?.id ?? '',
           master_plan_url: project.master_plan_url,
           total_area_sqm: Number(project.total_area_sqm),
           acquisition_cost: Number(project.acquisition_cost),

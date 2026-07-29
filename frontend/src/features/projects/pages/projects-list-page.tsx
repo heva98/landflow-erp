@@ -63,6 +63,7 @@ export function ProjectsListPage() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Location</TableHead>
+              <TableHead>Owner</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Area (sqm)</TableHead>
               <TableHead>Expected revenue</TableHead>
@@ -72,21 +73,21 @@ export function ProjectsListPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   Loading projects…
                 </TableCell>
               </TableRow>
             )}
             {isError && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-destructive">
+                <TableCell colSpan={7} className="text-center text-destructive">
                   Failed to load projects.
                 </TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   No projects yet.
                 </TableCell>
               </TableRow>
@@ -99,6 +100,11 @@ export function ProjectsListPage() {
                   </Link>
                 </TableCell>
                 <TableCell>{project.location}</TableCell>
+                <TableCell className="text-muted-foreground">
+                  {project.owner
+                    ? `${project.owner.first_name} ${project.owner.last_name}`.trim() || project.owner.email
+                    : '—'}
+                </TableCell>
                 <TableCell>
                   <ProjectStatusBadge status={project.status} />
                 </TableCell>

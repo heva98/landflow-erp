@@ -8,11 +8,19 @@ export const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
   completed: 'Completed',
 }
 
+export interface ProjectOwner {
+  id: string
+  email: string
+  first_name: string
+  last_name: string
+}
+
 export interface Project {
   id: string
   name: string
   status: ProjectStatus
   description: string
+  owner: ProjectOwner | null
   location: string
   latitude: string | null
   longitude: string | null
@@ -51,6 +59,7 @@ export interface ProjectInput {
   status: ProjectStatus
   location: string
   description: string
+  owner_id: string | null
   master_plan_url: string
   total_area_sqm: number
   acquisition_cost: number

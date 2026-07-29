@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from apps.core.models import BaseModel
@@ -13,6 +14,11 @@ class Project(BaseModel):
     name = models.CharField(max_length=255, unique=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PLANNING)
     description = models.TextField(blank=True)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='owned_projects',
+        help_text='The project owner may edit this project even without a blanket change permission.',
+    )
 
     # Location
     location = models.CharField(max_length=255)
