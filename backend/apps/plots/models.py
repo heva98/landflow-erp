@@ -24,7 +24,7 @@ class Plot(BaseModel):
     # Financials — TZS. Writable only by roles granted `set_plot_financials`
     # (Administrator, Managing Director, Finance Manager, Sales Manager);
     # enforced in the serializer, not here.
-    price = models.DecimalField(max_digits=14, decimal_places=2)
+    price = models.DecimalField(max_digits=14, decimal_places=2, default=0)
     discount = models.DecimalField(max_digits=14, decimal_places=2, default=0)
 
     # Location
