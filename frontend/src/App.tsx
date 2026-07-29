@@ -4,6 +4,14 @@ import { AppProviders } from '@/app/providers'
 import { AppShell } from '@/components/layout/app-shell'
 import { ProtectedRoute } from '@/components/layout/protected-route'
 import { LoginPage } from '@/features/auth/pages/login-page'
+import { CustomerCreatePage } from '@/features/crm/pages/customer-create-page'
+import { CustomerDetailPage } from '@/features/crm/pages/customer-detail-page'
+import { CustomerEditPage } from '@/features/crm/pages/customer-edit-page'
+import { CustomersListPage } from '@/features/crm/pages/customers-list-page'
+import { LeadCreatePage } from '@/features/crm/pages/lead-create-page'
+import { LeadDetailPage } from '@/features/crm/pages/lead-detail-page'
+import { LeadEditPage } from '@/features/crm/pages/lead-edit-page'
+import { LeadsPipelinePage } from '@/features/crm/pages/leads-pipeline-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { PlotCreatePage } from '@/features/plots/pages/plot-create-page'
 import { PlotDetailPage } from '@/features/plots/pages/plot-detail-page'
@@ -34,6 +42,14 @@ function AppRoutes() {
         <Route path="/plots/new" element={<PlotCreatePage />} />
         <Route path="/plots/:id" element={<PlotDetailPage />} />
         <Route path="/plots/:id/edit" element={<PlotEditPage />} />
+        <Route path="/crm/leads" element={<LeadsPipelinePage />} />
+        <Route path="/crm/leads/new" element={<LeadCreatePage />} />
+        <Route path="/crm/leads/:id" element={<LeadDetailPage />} />
+        <Route path="/crm/leads/:id/edit" element={<LeadEditPage />} />
+        <Route path="/crm/customers" element={<CustomersListPage />} />
+        <Route path="/crm/customers/new" element={<CustomerCreatePage />} />
+        <Route path="/crm/customers/:id" element={<CustomerDetailPage />} />
+        <Route path="/crm/customers/:id/edit" element={<CustomerEditPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

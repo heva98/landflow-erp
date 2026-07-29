@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Map,
   Receipt,
+  Users,
   Wallet,
 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
@@ -23,7 +24,8 @@ const navItems: NavItem[] = [
   { label: 'Projects', icon: Building2, path: '/projects' },
   { label: 'Plots', icon: LandPlot, path: '/plots' },
   { label: 'Survey', icon: Map },
-  { label: 'CRM', icon: Contact },
+  { label: 'Leads', icon: Contact, path: '/crm/leads' },
+  { label: 'Customers', icon: Users, path: '/crm/customers' },
   { label: 'Sales', icon: Receipt },
   { label: 'Installments', icon: Wallet },
   { label: 'Reports', icon: ClipboardList },

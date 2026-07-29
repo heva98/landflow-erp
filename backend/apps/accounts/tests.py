@@ -78,7 +78,9 @@ def test_me_endpoint_returns_user_role_and_permissions(api_client, user):
     assert response.status_code == status.HTTP_200_OK
     assert response.data['email'] == user.email
     assert response.data['role']['name'] == 'Sales Agent'
-    assert response.data['permissions'] == ['plots.view_plot', 'projects.view_project']
+    # Subset check, not exact equality — Sales Agent gains more permissions as
+    # each module lands its own permission-granting migration.
+    assert {'plots.view_plot', 'projects.view_project'}.issubset(set(response.data['permissions']))
 
 
 @pytest.mark.django_db
