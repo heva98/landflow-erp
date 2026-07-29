@@ -5,6 +5,10 @@ import { AppShell } from '@/components/layout/app-shell'
 import { ProtectedRoute } from '@/components/layout/protected-route'
 import { LoginPage } from '@/features/auth/pages/login-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
+import { PlotCreatePage } from '@/features/plots/pages/plot-create-page'
+import { PlotDetailPage } from '@/features/plots/pages/plot-detail-page'
+import { PlotEditPage } from '@/features/plots/pages/plot-edit-page'
+import { PlotsListPage } from '@/features/plots/pages/plots-list-page'
 import { ProjectCreatePage } from '@/features/projects/pages/project-create-page'
 import { ProjectDetailPage } from '@/features/projects/pages/project-detail-page'
 import { ProjectEditPage } from '@/features/projects/pages/project-edit-page'
@@ -26,6 +30,10 @@ function AppRoutes() {
         <Route path="/projects/new" element={<ProjectCreatePage />} />
         <Route path="/projects/:id" element={<ProjectDetailPage />} />
         <Route path="/projects/:id/edit" element={<ProjectEditPage />} />
+        <Route path="/plots" element={<PlotsListPage />} />
+        <Route path="/plots/new" element={<PlotCreatePage />} />
+        <Route path="/plots/:id" element={<PlotDetailPage />} />
+        <Route path="/plots/:id/edit" element={<PlotEditPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

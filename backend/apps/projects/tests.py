@@ -267,3 +267,26 @@ def test_role_with_explicit_financials_permission_sees_expected_revenue(
     response = api_client.get(reverse('project-list'))
     result = response.data['results'][0]
     assert result['expected_revenue'] == '300000000.00'
+
+
+@pytest.mark.django_db
+def test_finance_manager_can_list_projects(api_client, project):
+    # Finance Manager needs to see projects to work with their plots.
+    finance_manager_role = Role.objects.get(name='Finance Manager')
+    finance_manager = User.objects.create_user(
+        email='finance@landflow.co.tz', password='s3cure-pass', role=finance_manager_role,
+    )
+    api_client.force_authenticate(user=finance_manager)
+    response = api_client.get(reverse('project-list'))
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_sales_manager_can_list_projects(api_client, project):
+    sales_manager_role = Role.objects.get(name='Sales Manager')
+    sales_manager = User.objects.create_user(
+        email='salesmgr@landflow.co.tz', password='s3cure-pass', role=sales_manager_role,
+    )
+    api_client.force_authenticate(user=sales_manager)
+    response = api_client.get(reverse('project-list'))
+    assert response.status_code == status.HTTP_200_OK

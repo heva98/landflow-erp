@@ -78,7 +78,7 @@ def test_me_endpoint_returns_user_role_and_permissions(api_client, user):
     assert response.status_code == status.HTTP_200_OK
     assert response.data['email'] == user.email
     assert response.data['role']['name'] == 'Sales Agent'
-    assert response.data['permissions'] == ['projects.view_project']
+    assert response.data['permissions'] == ['plots.view_plot', 'projects.view_project']
 
 
 @pytest.mark.django_db
