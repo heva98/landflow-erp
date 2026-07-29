@@ -1,23 +1,21 @@
 import uuid
 
 import pytest
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_delete, post_save
 
 from apps.core.audit import register_for_audit
 from apps.core.models import AuditLog
 
-User = get_user_model()
-
 
 @pytest.fixture
-def audited_user_model():
-    register_for_audit(User)
-    yield User
-    dispatch_uid = f'{User.__module__}.{User.__name__}'
-    post_save.disconnect(sender=User, dispatch_uid=f'audit_save:{dispatch_uid}')
-    post_delete.disconnect(sender=User, dispatch_uid=f'audit_delete:{dispatch_uid}')
+def audited_group_model():
+    register_for_audit(Group)
+    yield Group
+    dispatch_uid = f'{Group.__module__}.{Group.__name__}'
+    post_save.disconnect(sender=Group, dispatch_uid=f'audit_save:{dispatch_uid}')
+    post_delete.disconnect(sender=Group, dispatch_uid=f'audit_delete:{dispatch_uid}')
 
 
 @pytest.mark.django_db
@@ -34,22 +32,22 @@ def test_base_model_fields():
 
 
 @pytest.mark.django_db
-def test_register_for_audit_records_create_and_update(audited_user_model):
-    user = User.objects.create_user(username='jane', password='pw-12345')
-    create_log = AuditLog.objects.get(action=AuditLog.Action.CREATE, object_id=str(user.pk))
-    assert create_log.content_type == ContentType.objects.get_for_model(User)
+def test_register_for_audit_records_create_and_update(audited_group_model):
+    group = Group.objects.create(name='reviewers')
+    create_log = AuditLog.objects.get(action=AuditLog.Action.CREATE, object_id=str(group.pk))
+    assert create_log.content_type == ContentType.objects.get_for_model(Group)
 
-    user.first_name = 'Jane'
-    user.save()
-    assert AuditLog.objects.filter(action=AuditLog.Action.UPDATE, object_id=str(user.pk)).exists()
+    group.name = 'senior-reviewers'
+    group.save()
+    assert AuditLog.objects.filter(action=AuditLog.Action.UPDATE, object_id=str(group.pk)).exists()
 
 
 @pytest.mark.django_db
-def test_register_for_audit_records_delete(audited_user_model):
-    user = User.objects.create_user(username='john', password='pw-12345')
-    user_pk = str(user.pk)
-    user.delete()
-    assert AuditLog.objects.filter(action=AuditLog.Action.DELETE, object_id=user_pk).exists()
+def test_register_for_audit_records_delete(audited_group_model):
+    group = Group.objects.create(name='temp-group')
+    group_pk = str(group.pk)
+    group.delete()
+    assert AuditLog.objects.filter(action=AuditLog.Action.DELETE, object_id=group_pk).exists()
 
 
 @pytest.mark.django_db
