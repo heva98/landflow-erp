@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.core',
     'apps.accounts',
     'apps.projects',
+    'apps.plots',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'

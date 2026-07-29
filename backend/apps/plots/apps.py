@@ -1,0 +1,14 @@
+from django.apps import AppConfig
+
+
+class PlotsConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'apps.plots'
+    label = 'plots'
+
+    def ready(self):
+        from apps.core.audit import register_for_audit
+
+        from .models import Plot
+
+        register_for_audit(Plot)
