@@ -39,6 +39,20 @@ def admin_user(db, administrator_role):
 
 
 @pytest.fixture
+def receptionist_role(db):
+    # A role with no project permissions at all, unlike Sales Agent which is
+    # seeded with view_project.
+    return Role.objects.get(name='Receptionist')
+
+
+@pytest.fixture
+def receptionist(db, receptionist_role):
+    return User.objects.create_user(
+        email='receptionist@landflow.co.tz', password='s3cure-pass', role=receptionist_role,
+    )
+
+
+@pytest.fixture
 def project(db):
     return Project.objects.create(
         name='Buyuni Phase II',
@@ -83,8 +97,16 @@ def test_list_requires_authentication(api_client):
 
 
 @pytest.mark.django_db
-def test_agent_without_permission_gets_403(api_client, agent):
+def test_sales_agent_can_list_projects(api_client, agent, project):
+    # Sales Agent is seeded with view_project so agents can see the project list.
     api_client.force_authenticate(user=agent)
+    response = api_client.get(reverse('project-list'))
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_role_without_permission_gets_403(api_client, receptionist):
+    api_client.force_authenticate(user=receptionist)
     response = api_client.get(reverse('project-list'))
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -110,12 +132,12 @@ def test_administrator_can_create_project(api_client, admin_user):
 
 
 @pytest.mark.django_db
-def test_agent_can_view_with_explicit_permission(api_client, sales_agent_role, agent, project):
+def test_role_can_view_with_explicit_permission(api_client, receptionist_role, receptionist, project):
     from django.contrib.auth.models import Permission
 
     view_perm = Permission.objects.get(content_type__app_label='projects', codename='view_project')
-    sales_agent_role.permissions.add(view_perm)
-    api_client.force_authenticate(user=agent)
+    receptionist_role.permissions.add(view_perm)
+    api_client.force_authenticate(user=receptionist)
     response = api_client.get(reverse('project-list'))
     assert response.status_code == status.HTTP_200_OK
 
@@ -160,26 +182,26 @@ def test_non_owner_without_permission_cannot_edit(api_client, agent, project):
 
 
 @pytest.mark.django_db
-def test_owner_can_retrieve_their_project_without_view_permission(api_client, agent, project):
-    project.owner = agent
+def test_owner_can_retrieve_their_project_without_view_permission(api_client, receptionist, project):
+    project.owner = receptionist
     project.save(update_fields=['owner'])
-    api_client.force_authenticate(user=agent)
+    api_client.force_authenticate(user=receptionist)
     response = api_client.get(reverse('project-detail', args=[project.id]))
     assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
-def test_non_owner_without_permission_cannot_retrieve(api_client, agent, project):
-    api_client.force_authenticate(user=agent)
+def test_non_owner_without_permission_cannot_retrieve(api_client, receptionist, project):
+    api_client.force_authenticate(user=receptionist)
     response = api_client.get(reverse('project-detail', args=[project.id]))
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 @pytest.mark.django_db
-def test_owner_without_permission_still_cannot_list_all_projects(api_client, agent, project):
-    project.owner = agent
+def test_owner_without_permission_still_cannot_list_all_projects(api_client, receptionist, project):
+    project.owner = receptionist
     project.save(update_fields=['owner'])
-    api_client.force_authenticate(user=agent)
+    api_client.force_authenticate(user=receptionist)
     response = api_client.get(reverse('project-list'))
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -197,3 +219,73 @@ def test_administrator_can_assign_a_project_owner(api_client, admin_user, agent,
     response = api_client.patch(reverse('project-detail', args=[project.id]), {'owner_id': str(agent.id)})
     assert response.status_code == status.HTTP_200_OK
     assert response.data['owner']['email'] == agent.email
+
+
+@pytest.mark.django_db
+def test_sales_agent_list_hides_financial_fields(api_client, agent, project):
+    api_client.force_authenticate(user=agent)
+    response = api_client.get(reverse('project-list'))
+    assert response.status_code == status.HTTP_200_OK
+    result = response.data['results'][0]
+    assert 'expected_revenue' not in result
+    assert 'roi_percent' not in result
+    assert 'acquisition_cost' not in result
+    assert 'development_cost' not in result
+    assert 'total_cost' not in result
+    assert 'total_area_sqm' in result
+
+
+@pytest.mark.django_db
+def test_sales_agent_detail_hides_financial_fields(api_client, agent, project):
+    project.owner = agent
+    project.save(update_fields=['owner'])
+    api_client.force_authenticate(user=agent)
+    response = api_client.get(reverse('project-detail', args=[project.id]))
+    assert response.status_code == status.HTTP_200_OK
+    assert 'expected_revenue' not in response.data
+    assert 'roi_percent' not in response.data
+    assert 'acquisition_cost' not in response.data
+    assert 'development_cost' not in response.data
+    assert 'total_cost' not in response.data
+
+
+@pytest.mark.django_db
+def test_sales_agent_cannot_set_financial_fields_when_editing_own_project(api_client, agent, project):
+    project.owner = agent
+    project.save(update_fields=['owner'])
+    api_client.force_authenticate(user=agent)
+    response = api_client.patch(
+        reverse('project-detail', args=[project.id]),
+        {'acquisition_cost': '1.00', 'development_cost': '1.00', 'expected_revenue': '1.00'},
+    )
+    assert response.status_code == status.HTTP_200_OK
+    project.refresh_from_db()
+    assert project.acquisition_cost == Decimal('100000000.00')
+    assert project.development_cost == Decimal('50000000.00')
+    assert project.expected_revenue == Decimal('300000000.00')
+
+
+@pytest.mark.django_db
+def test_administrator_list_includes_financial_fields(api_client, admin_user, project):
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.get(reverse('project-list'))
+    result = response.data['results'][0]
+    assert result['expected_revenue'] == '300000000.00'
+    assert result['roi_percent'] == '100.00'
+    assert result['acquisition_cost'] == '100000000.00'
+    assert result['development_cost'] == '50000000.00'
+    assert result['total_cost'] == '150000000.00'
+
+
+@pytest.mark.django_db
+def test_role_with_explicit_financials_permission_sees_expected_revenue(
+    api_client, sales_agent_role, agent, project,
+):
+    from django.contrib.auth.models import Permission
+
+    financials_perm = Permission.objects.get(content_type__app_label='projects', codename='view_project_financials')
+    sales_agent_role.permissions.add(financials_perm)
+    api_client.force_authenticate(user=agent)
+    response = api_client.get(reverse('project-list'))
+    result = response.data['results'][0]
+    assert result['expected_revenue'] == '300000000.00'

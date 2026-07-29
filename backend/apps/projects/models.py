@@ -47,6 +47,9 @@ class Project(BaseModel):
 
     class Meta:
         ordering = ['-created_at']
+        permissions = [
+            ('view_project_financials', 'Can view project financial figures (expected revenue, ROI)'),
+        ]
 
     def __str__(self):
         return self.name

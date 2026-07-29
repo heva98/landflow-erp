@@ -6,20 +6,25 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useAuth } from '@/features/auth/hooks/use-auth'
 import { formatTZS } from '@/lib/utils'
 
 import { ProjectStatusBadge } from '../components/project-status-badge'
 import { useProjectsQuery } from '../hooks/use-projects'
+import { canViewProjectFinancials } from '../lib/permissions'
 import { PROJECT_STATUS_LABELS, PROJECT_STATUSES, type ProjectStatus } from '../types'
 
 export function ProjectsListPage() {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<ProjectStatus | 'all'>('all')
+  const { user } = useAuth()
+  const canViewFinancials = canViewProjectFinancials(user?.permissions)
 
   const { data, isLoading, isError } = useProjectsQuery({
     search: search || undefined,
     status: status === 'all' ? undefined : status,
   })
+  const columnCount = canViewFinancials ? 7 : 5
 
   return (
     <div className="flex flex-col gap-4">
@@ -66,28 +71,32 @@ export function ProjectsListPage() {
               <TableHead>Owner</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Area (sqm)</TableHead>
-              <TableHead>Expected revenue</TableHead>
-              <TableHead>ROI</TableHead>
+              {canViewFinancials && (
+                <>
+                  <TableHead>Expected revenue</TableHead>
+                  <TableHead>ROI</TableHead>
+                </>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                <TableCell colSpan={columnCount} className="text-center text-muted-foreground">
                   Loading projects…
                 </TableCell>
               </TableRow>
             )}
             {isError && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-destructive">
+                <TableCell colSpan={columnCount} className="text-center text-destructive">
                   Failed to load projects.
                 </TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                <TableCell colSpan={columnCount} className="text-center text-muted-foreground">
                   No projects yet.
                 </TableCell>
               </TableRow>
@@ -109,10 +118,14 @@ export function ProjectsListPage() {
                   <ProjectStatusBadge status={project.status} />
                 </TableCell>
                 <TableCell>{Number(project.total_area_sqm).toLocaleString()}</TableCell>
-                <TableCell>{formatTZS(project.expected_revenue)}</TableCell>
-                <TableCell>
-                  {project.roi_percent === null ? '—' : `${Number(project.roi_percent).toFixed(1)}%`}
-                </TableCell>
+                {canViewFinancials && (
+                  <>
+                    <TableCell>{project.expected_revenue !== undefined ? formatTZS(project.expected_revenue) : '—'}</TableCell>
+                    <TableCell>
+                      {project.roi_percent == null ? '—' : `${Number(project.roi_percent).toFixed(1)}%`}
+                    </TableCell>
+                  </>
+                )}
               </TableRow>
             ))}
           </TableBody>

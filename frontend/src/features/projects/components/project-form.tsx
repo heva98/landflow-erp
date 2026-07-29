@@ -10,8 +10,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuth } from '@/features/auth/hooks/use-auth'
 
 import { useUsersQuery } from '../hooks/use-users'
+import { canViewProjectFinancials } from '../lib/permissions'
 import { PROJECT_STATUS_LABELS, PROJECT_STATUSES, type ProjectInput } from '../types'
 
 const UNASSIGNED = 'unassigned'
@@ -42,6 +44,8 @@ interface ProjectFormProps {
 export function ProjectForm({ defaultValues, submitLabel, onSubmit }: ProjectFormProps) {
   const [formError, setFormError] = useState<string | null>(null)
   const { data: users, isError: usersError } = useUsersQuery()
+  const { user } = useAuth()
+  const canViewFinancials = canViewProjectFinancials(user?.permissions)
 
   const {
     register,
@@ -179,44 +183,54 @@ export function ProjectForm({ defaultValues, submitLabel, onSubmit }: ProjectFor
           {errors.master_plan_url && <p className="text-sm text-destructive">{errors.master_plan_url.message}</p>}
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="acquisition_cost">Acquisition cost (TZS)</Label>
-          <Input
-            id="acquisition_cost"
-            type="number"
-            step="0.01"
-            min="0"
-            aria-invalid={Boolean(errors.acquisition_cost)}
-            {...register('acquisition_cost', { valueAsNumber: true })}
-          />
-          {errors.acquisition_cost && <p className="text-sm text-destructive">{errors.acquisition_cost.message}</p>}
-        </div>
+        {canViewFinancials && (
+          <>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="acquisition_cost">Acquisition cost (TZS)</Label>
+              <Input
+                id="acquisition_cost"
+                type="number"
+                step="0.01"
+                min="0"
+                aria-invalid={Boolean(errors.acquisition_cost)}
+                {...register('acquisition_cost', { valueAsNumber: true })}
+              />
+              {errors.acquisition_cost && (
+                <p className="text-sm text-destructive">{errors.acquisition_cost.message}</p>
+              )}
+            </div>
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="development_cost">Development cost (TZS)</Label>
-          <Input
-            id="development_cost"
-            type="number"
-            step="0.01"
-            min="0"
-            aria-invalid={Boolean(errors.development_cost)}
-            {...register('development_cost', { valueAsNumber: true })}
-          />
-          {errors.development_cost && <p className="text-sm text-destructive">{errors.development_cost.message}</p>}
-        </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="development_cost">Development cost (TZS)</Label>
+              <Input
+                id="development_cost"
+                type="number"
+                step="0.01"
+                min="0"
+                aria-invalid={Boolean(errors.development_cost)}
+                {...register('development_cost', { valueAsNumber: true })}
+              />
+              {errors.development_cost && (
+                <p className="text-sm text-destructive">{errors.development_cost.message}</p>
+              )}
+            </div>
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="expected_revenue">Expected revenue (TZS)</Label>
-          <Input
-            id="expected_revenue"
-            type="number"
-            step="0.01"
-            min="0"
-            aria-invalid={Boolean(errors.expected_revenue)}
-            {...register('expected_revenue', { valueAsNumber: true })}
-          />
-          {errors.expected_revenue && <p className="text-sm text-destructive">{errors.expected_revenue.message}</p>}
-        </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="expected_revenue">Expected revenue (TZS)</Label>
+              <Input
+                id="expected_revenue"
+                type="number"
+                step="0.01"
+                min="0"
+                aria-invalid={Boolean(errors.expected_revenue)}
+                {...register('expected_revenue', { valueAsNumber: true })}
+              />
+              {errors.expected_revenue && (
+                <p className="text-sm text-destructive">{errors.expected_revenue.message}</p>
+              )}
+            </div>
+          </>
+        )}
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="start_date">Start date</Label>

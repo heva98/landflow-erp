@@ -30,11 +30,12 @@ export interface Project {
   video_urls: string[]
   nearby_services: string[]
   total_area_sqm: string
-  acquisition_cost: string
-  development_cost: string
-  expected_revenue: string
-  total_cost: string
-  roi_percent: string | null
+  // Omitted entirely by the API for users without view_project_financials.
+  acquisition_cost?: string
+  development_cost?: string
+  expected_revenue?: string
+  total_cost?: string
+  roi_percent?: string | null
   start_date: string | null
   expected_completion_date: string | null
   created_at: string

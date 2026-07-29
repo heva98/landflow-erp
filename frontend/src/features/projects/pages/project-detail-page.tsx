@@ -3,10 +3,12 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useAuth } from '@/features/auth/hooks/use-auth'
 import { formatTZS } from '@/lib/utils'
 
 import { ProjectStatusBadge } from '../components/project-status-badge'
 import { useProjectQuery } from '../hooks/use-projects'
+import { canViewProjectFinancials } from '../lib/permissions'
 
 function formatDate(value: string | null) {
   return value ? new Date(value).toLocaleDateString('en-GB') : '—'
@@ -21,6 +23,8 @@ function formatOwnerName(owner: { email: string; first_name: string; last_name: 
 export function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const canViewFinancials = canViewProjectFinancials(user?.permissions)
   const { data: project, isLoading, isError } = useProjectQuery(id)
 
   if (isLoading) {
@@ -51,7 +55,7 @@ export function ProjectDetailPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className={`grid grid-cols-1 gap-4 ${canViewFinancials ? 'sm:grid-cols-3' : ''}`}>
         <Card>
           <CardHeader>
             <CardTitle>Total area</CardTitle>
@@ -60,22 +64,26 @@ export function ProjectDetailPage() {
             {Number(project.total_area_sqm).toLocaleString()} sqm
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Expected revenue</CardTitle>
-          </CardHeader>
-          <CardContent className="text-xl font-semibold text-foreground">
-            {formatTZS(project.expected_revenue)}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>ROI</CardTitle>
-          </CardHeader>
-          <CardContent className="text-xl font-semibold text-foreground">
-            {project.roi_percent === null ? '—' : `${Number(project.roi_percent).toFixed(1)}%`}
-          </CardContent>
-        </Card>
+        {canViewFinancials && (
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle>Expected revenue</CardTitle>
+              </CardHeader>
+              <CardContent className="text-xl font-semibold text-foreground">
+                {project.expected_revenue !== undefined ? formatTZS(project.expected_revenue) : '—'}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>ROI</CardTitle>
+              </CardHeader>
+              <CardContent className="text-xl font-semibold text-foreground">
+                {project.roi_percent == null ? '—' : `${Number(project.roi_percent).toFixed(1)}%`}
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
 
       <Card>
@@ -83,14 +91,22 @@ export function ProjectDetailPage() {
           <CardTitle>Costs & timeline</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <div>
-            <p className="text-xs text-muted-foreground">Acquisition cost</p>
-            <p className="font-medium text-foreground">{formatTZS(project.acquisition_cost)}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Development cost</p>
-            <p className="font-medium text-foreground">{formatTZS(project.development_cost)}</p>
-          </div>
+          {canViewFinancials && (
+            <>
+              <div>
+                <p className="text-xs text-muted-foreground">Acquisition cost</p>
+                <p className="font-medium text-foreground">
+                  {project.acquisition_cost !== undefined ? formatTZS(project.acquisition_cost) : '—'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Development cost</p>
+                <p className="font-medium text-foreground">
+                  {project.development_cost !== undefined ? formatTZS(project.development_cost) : '—'}
+                </p>
+              </div>
+            </>
+          )}
           <div>
             <p className="text-xs text-muted-foreground">Start date</p>
             <p className="font-medium text-foreground">{formatDate(project.start_date)}</p>

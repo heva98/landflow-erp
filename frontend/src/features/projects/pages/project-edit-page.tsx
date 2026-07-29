@@ -26,9 +26,9 @@ export function ProjectEditPage() {
           owner_id: project.owner?.id ?? '',
           master_plan_url: project.master_plan_url,
           total_area_sqm: Number(project.total_area_sqm),
-          acquisition_cost: Number(project.acquisition_cost),
-          development_cost: Number(project.development_cost),
-          expected_revenue: Number(project.expected_revenue),
+          acquisition_cost: project.acquisition_cost !== undefined ? Number(project.acquisition_cost) : 0,
+          development_cost: project.development_cost !== undefined ? Number(project.development_cost) : 0,
+          expected_revenue: project.expected_revenue !== undefined ? Number(project.expected_revenue) : 0,
           start_date: project.start_date ?? '',
           expected_completion_date: project.expected_completion_date ?? '',
         }}
