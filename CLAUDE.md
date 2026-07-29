@@ -9,7 +9,7 @@ Primary currency is TZS. UI is an internal admin tool (think Linear / Odoo /
 ERPNext), **not** a marketing website.
 
 ## Stack — do not deviate without asking
-**Backend:** Django 5 + Django REST Framework, PostgreSQL, JWT auth
+**Backend:** Django 6 + Django REST Framework, PostgreSQL, JWT auth
 (djangorestframework-simplejwt), Celery + Redis for async and scheduled jobs.
 **Frontend:** React 19 + TypeScript + Vite, TailwindCSS, ShadCN UI,
 TanStack Query (server state), React Hook Form + Zod (forms/validation),
