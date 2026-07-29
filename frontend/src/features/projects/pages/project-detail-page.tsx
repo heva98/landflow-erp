@@ -8,16 +8,10 @@ import { formatTZS } from '@/lib/utils'
 
 import { ProjectStatusBadge } from '../components/project-status-badge'
 import { useProjectQuery } from '../hooks/use-projects'
-import { canViewProjectFinancials } from '../lib/permissions'
+import { canEditProjects, canViewProjectFinancials } from '../lib/permissions'
 
 function formatDate(value: string | null) {
   return value ? new Date(value).toLocaleDateString('en-GB') : '—'
-}
-
-function formatOwnerName(owner: { email: string; first_name: string; last_name: string } | null) {
-  if (!owner) return 'Unassigned'
-  const name = `${owner.first_name} ${owner.last_name}`.trim()
-  return name || owner.email
 }
 
 export function ProjectDetailPage() {
@@ -25,6 +19,7 @@ export function ProjectDetailPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const canViewFinancials = canViewProjectFinancials(user?.permissions)
+  const canEdit = canEditProjects(user?.permissions)
   const { data: project, isLoading, isError } = useProjectQuery(id)
 
   if (isLoading) {
@@ -48,11 +43,13 @@ export function ProjectDetailPage() {
           </div>
           <ProjectStatusBadge status={project.status} />
         </div>
-        <Button asChild variant="outline">
-          <Link to={`/projects/${project.id}/edit`}>
-            <Pencil /> Edit
-          </Link>
-        </Button>
+        {canEdit && (
+          <Button asChild variant="outline">
+            <Link to={`/projects/${project.id}/edit`}>
+              <Pencil /> Edit
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className={`grid grid-cols-1 gap-4 ${canViewFinancials ? 'sm:grid-cols-3' : ''}`}>
@@ -114,10 +111,6 @@ export function ProjectDetailPage() {
           <div>
             <p className="text-xs text-muted-foreground">Expected completion</p>
             <p className="font-medium text-foreground">{formatDate(project.expected_completion_date)}</p>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">Owner</p>
-            <p className="font-medium text-foreground">{formatOwnerName(project.owner)}</p>
           </div>
         </CardContent>
       </Card>

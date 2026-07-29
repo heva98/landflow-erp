@@ -25,6 +25,11 @@ def administrator_role(db):
 
 
 @pytest.fixture
+def managing_director_role(db):
+    return Role.objects.get(name='Managing Director')
+
+
+@pytest.fixture
 def agent(db, sales_agent_role):
     return User.objects.create_user(
         email='agent@landflow.co.tz', password='s3cure-pass', role=sales_agent_role,
@@ -35,6 +40,13 @@ def agent(db, sales_agent_role):
 def admin_user(db, administrator_role):
     return User.objects.create_user(
         email='admin@landflow.co.tz', password='s3cure-pass', role=administrator_role,
+    )
+
+
+@pytest.fixture
+def managing_director(db, managing_director_role):
+    return User.objects.create_user(
+        email='director@landflow.co.tz', password='s3cure-pass', role=managing_director_role,
     )
 
 
@@ -164,10 +176,15 @@ def test_search_by_name(api_client, admin_user, project):
 
 
 @pytest.mark.django_db
-def test_owner_can_edit_their_project_without_change_permission(api_client, agent, project):
-    project.owner = agent
-    project.save(update_fields=['owner'])
+def test_sales_agent_cannot_edit_a_project(api_client, agent, project):
     api_client.force_authenticate(user=agent)
+    response = api_client.patch(reverse('project-detail', args=[project.id]), {'status': 'selling'})
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_managing_director_can_edit_a_project(api_client, managing_director, project):
+    api_client.force_authenticate(user=managing_director)
     response = api_client.patch(reverse('project-detail', args=[project.id]), {'status': 'selling'})
     assert response.status_code == status.HTTP_200_OK
     project.refresh_from_db()
@@ -175,50 +192,17 @@ def test_owner_can_edit_their_project_without_change_permission(api_client, agen
 
 
 @pytest.mark.django_db
-def test_non_owner_without_permission_cannot_edit(api_client, agent, project):
-    api_client.force_authenticate(user=agent)
-    response = api_client.patch(reverse('project-detail', args=[project.id]), {'status': 'selling'})
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-
-
-@pytest.mark.django_db
-def test_owner_can_retrieve_their_project_without_view_permission(api_client, receptionist, project):
-    project.owner = receptionist
-    project.save(update_fields=['owner'])
-    api_client.force_authenticate(user=receptionist)
-    response = api_client.get(reverse('project-detail', args=[project.id]))
-    assert response.status_code == status.HTTP_200_OK
-
-
-@pytest.mark.django_db
-def test_non_owner_without_permission_cannot_retrieve(api_client, receptionist, project):
-    api_client.force_authenticate(user=receptionist)
-    response = api_client.get(reverse('project-detail', args=[project.id]))
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-
-
-@pytest.mark.django_db
-def test_owner_without_permission_still_cannot_list_all_projects(api_client, receptionist, project):
-    project.owner = receptionist
-    project.save(update_fields=['owner'])
-    api_client.force_authenticate(user=receptionist)
-    response = api_client.get(reverse('project-list'))
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-
-
-@pytest.mark.django_db
-def test_administrator_can_edit_a_project_they_do_not_own(api_client, admin_user, project):
+def test_administrator_can_edit_a_project(api_client, admin_user, project):
     api_client.force_authenticate(user=admin_user)
     response = api_client.patch(reverse('project-detail', args=[project.id]), {'status': 'selling'})
     assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
-def test_administrator_can_assign_a_project_owner(api_client, admin_user, agent, project):
-    api_client.force_authenticate(user=admin_user)
-    response = api_client.patch(reverse('project-detail', args=[project.id]), {'owner_id': str(agent.id)})
-    assert response.status_code == status.HTTP_200_OK
-    assert response.data['owner']['email'] == agent.email
+def test_role_without_permission_cannot_retrieve(api_client, receptionist, project):
+    api_client.force_authenticate(user=receptionist)
+    response = api_client.get(reverse('project-detail', args=[project.id]))
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 @pytest.mark.django_db
@@ -236,24 +220,18 @@ def test_sales_agent_list_hides_financial_fields(api_client, agent, project):
 
 
 @pytest.mark.django_db
-def test_sales_agent_detail_hides_financial_fields(api_client, agent, project):
-    project.owner = agent
-    project.save(update_fields=['owner'])
-    api_client.force_authenticate(user=agent)
-    response = api_client.get(reverse('project-detail', args=[project.id]))
+def test_managing_director_list_hides_financial_fields(api_client, managing_director, project):
+    # Managing Director can edit projects but wasn't granted view_project_financials.
+    api_client.force_authenticate(user=managing_director)
+    response = api_client.get(reverse('project-list'))
     assert response.status_code == status.HTTP_200_OK
-    assert 'expected_revenue' not in response.data
-    assert 'roi_percent' not in response.data
-    assert 'acquisition_cost' not in response.data
-    assert 'development_cost' not in response.data
-    assert 'total_cost' not in response.data
+    result = response.data['results'][0]
+    assert 'expected_revenue' not in result
 
 
 @pytest.mark.django_db
-def test_sales_agent_cannot_set_financial_fields_when_editing_own_project(api_client, agent, project):
-    project.owner = agent
-    project.save(update_fields=['owner'])
-    api_client.force_authenticate(user=agent)
+def test_managing_director_cannot_set_financial_fields_when_editing(api_client, managing_director, project):
+    api_client.force_authenticate(user=managing_director)
     response = api_client.patch(
         reverse('project-detail', args=[project.id]),
         {'acquisition_cost': '1.00', 'development_cost': '1.00', 'expected_revenue': '1.00'},

@@ -2,3 +2,8 @@ export function canViewProjectFinancials(permissions: string[] | undefined): boo
   if (!permissions) return false
   return permissions.includes('*') || permissions.includes('projects.view_project_financials')
 }
+
+export function canEditProjects(permissions: string[] | undefined): boolean {
+  if (!permissions) return false
+  return permissions.includes('*') || permissions.includes('projects.change_project')
+}

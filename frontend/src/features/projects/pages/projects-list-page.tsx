@@ -24,7 +24,7 @@ export function ProjectsListPage() {
     search: search || undefined,
     status: status === 'all' ? undefined : status,
   })
-  const columnCount = canViewFinancials ? 7 : 5
+  const columnCount = canViewFinancials ? 6 : 4
 
   return (
     <div className="flex flex-col gap-4">
@@ -68,7 +68,6 @@ export function ProjectsListPage() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Location</TableHead>
-              <TableHead>Owner</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Area (sqm)</TableHead>
               {canViewFinancials && (
@@ -109,11 +108,6 @@ export function ProjectsListPage() {
                   </Link>
                 </TableCell>
                 <TableCell>{project.location}</TableCell>
-                <TableCell className="text-muted-foreground">
-                  {project.owner
-                    ? `${project.owner.first_name} ${project.owner.last_name}`.trim() || project.owner.email
-                    : '—'}
-                </TableCell>
                 <TableCell>
                   <ProjectStatusBadge status={project.status} />
                 </TableCell>
