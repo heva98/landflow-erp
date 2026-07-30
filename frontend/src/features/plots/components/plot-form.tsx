@@ -200,10 +200,6 @@ export function PlotForm({ defaultValues, submitLabel, onSubmit }: PlotFormProps
           {errors.google_maps_url && <p className="text-sm text-destructive">{errors.google_maps_url.message}</p>}
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="current_owner">Current owner</Label>
-          <Input id="current_owner" {...register('current_owner')} />
-        </div>
       </div>
 
       {formError && <p className="text-sm text-destructive">{formError}</p>}

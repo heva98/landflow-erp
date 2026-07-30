@@ -24,7 +24,7 @@ export function PlotsListPage() {
     status: status === 'all' ? undefined : status,
     project: projectId === 'all' ? undefined : projectId,
   })
-  const columnCount = 7
+  const columnCount = 6
 
   return (
     <div className="flex flex-col gap-4">
@@ -85,7 +85,6 @@ export function PlotsListPage() {
               <TableHead>Status</TableHead>
               <TableHead>Area (sqm)</TableHead>
               <TableHead>Price</TableHead>
-              <TableHead>Owner</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -124,7 +123,6 @@ export function PlotsListPage() {
                 </TableCell>
                 <TableCell>{Number(plot.area_sqm).toLocaleString()}</TableCell>
                 <TableCell>{formatTZS(plot.price)}</TableCell>
-                <TableCell>{plot.current_owner || '—'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -94,10 +94,6 @@ export function PlotDetailPage() {
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <div>
-            <p className="text-xs text-muted-foreground">Current owner</p>
-            <p className="font-medium text-foreground">{plot.current_owner || '—'}</p>
-          </div>
-          <div>
             <p className="text-xs text-muted-foreground">Google Maps</p>
             {plot.google_maps_url ? (
               <a
