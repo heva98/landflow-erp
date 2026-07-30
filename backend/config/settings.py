@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.projects',
     'apps.plots',
     'apps.crm',
+    'apps.reservations',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
