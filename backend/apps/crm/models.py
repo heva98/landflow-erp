@@ -42,7 +42,6 @@ class Customer(BaseModel):
     )
     phone = models.CharField(max_length=30, db_index=True)
     email = models.EmailField(blank=True, db_index=True)
-    national_id = models.CharField(max_length=50, blank=True)
     address = models.CharField(max_length=255, blank=True)
 
     class Meta:

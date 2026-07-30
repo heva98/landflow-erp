@@ -70,10 +70,6 @@ export function CustomerDetailPage() {
             <p className="font-medium text-foreground">{customer.email || '—'}</p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">National ID</p>
-            <p className="font-medium text-foreground">{customer.national_id || '—'}</p>
-          </div>
-          <div>
             <p className="text-xs text-muted-foreground">Address</p>
             <p className="font-medium text-foreground">{customer.address || '—'}</p>
           </div>

@@ -17,7 +17,6 @@ const customerFormSchema = z.object({
   full_name: z.string().min(1, 'Full name is required').max(255),
   phone: z.string().min(1, 'Phone is required').max(30),
   email: z.union([z.string().email('Enter a valid email'), z.literal('')]).optional(),
-  national_id: z.string().max(50).optional(),
   address: z.string().max(255).optional(),
 })
 
@@ -53,7 +52,6 @@ export function CustomerForm({ defaultValues, submitLabel, onSubmit }: CustomerF
         full_name: values.full_name,
         phone: values.phone,
         email: values.email ?? '',
-        national_id: values.national_id ?? '',
         address: values.address ?? '',
       })
     } catch (error) {
@@ -106,11 +104,6 @@ export function CustomerForm({ defaultValues, submitLabel, onSubmit }: CustomerF
           <Label htmlFor="email">Email</Label>
           <Input id="email" type="email" aria-invalid={Boolean(errors.email)} {...register('email')} />
           {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="national_id">National ID</Label>
-          <Input id="national_id" {...register('national_id')} />
         </div>
 
         <div className="flex flex-col gap-1.5">

@@ -23,7 +23,6 @@ export function CustomerEditPage() {
           full_name: customer.full_name,
           phone: customer.phone,
           email: customer.email,
-          national_id: customer.national_id,
           address: customer.address,
         }}
         onSubmit={async (input) => {

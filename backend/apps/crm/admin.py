@@ -13,7 +13,7 @@ class OrganizationAdmin(admin.ModelAdmin):
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'customer_type', 'organization', 'phone', 'email')
     list_filter = ('customer_type',)
-    search_fields = ('full_name', 'phone', 'email', 'national_id')
+    search_fields = ('full_name', 'phone', 'email')
 
 
 @admin.register(Lead)

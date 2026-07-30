@@ -98,7 +98,6 @@ export interface Customer {
   organization_name: string | null
   phone: string
   email: string
-  national_id: string
   address: string
   created_at: string
   updated_at: string
@@ -115,7 +114,6 @@ export interface CustomerInput {
   full_name: string
   phone: string
   email: string
-  national_id: string
   address: string
 }
 

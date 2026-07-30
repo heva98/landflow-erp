@@ -19,7 +19,7 @@ export function CustomersListPage() {
     search: search || undefined,
     customer_type: customerType === 'all' ? undefined : customerType,
   })
-  const columnCount = 6
+  const columnCount = 4
 
   return (
     <div className="flex flex-col gap-4">
@@ -63,10 +63,8 @@ export function CustomersListPage() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Organization</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>National ID</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -103,10 +101,8 @@ export function CustomersListPage() {
                     {CUSTOMER_TYPE_LABELS[customer.customer_type]}
                   </Badge>
                 </TableCell>
-                <TableCell>{customer.organization_name || '—'}</TableCell>
                 <TableCell>{customer.phone}</TableCell>
                 <TableCell>{customer.email || '—'}</TableCell>
-                <TableCell>{customer.national_id || '—'}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -31,7 +31,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, RoleBasedModelPermissions]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = CustomerFilter
-    search_fields = ['full_name', 'phone', 'email', 'national_id']
+    search_fields = ['full_name', 'phone', 'email']
     ordering_fields = ['full_name', 'created_at']
 
 
