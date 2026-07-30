@@ -4,6 +4,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/features/auth/hooks/use-auth'
+import { ReservePlotDialog } from '@/features/reservations/components/reserve-plot-dialog'
+import { canCreateReservations } from '@/features/reservations/lib/permissions'
 import { formatTZS } from '@/lib/utils'
 
 import { PlotStatusBadge } from '../components/plot-status-badge'
@@ -15,6 +17,7 @@ export function PlotDetailPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const canEdit = canEditPlots(user?.permissions)
+  const canReserve = canCreateReservations(user?.permissions)
   const { data: plot, isLoading, isError } = usePlotQuery(id)
 
   if (isLoading) {
@@ -41,13 +44,18 @@ export function PlotDetailPage() {
           </div>
           <PlotStatusBadge status={plot.status} />
         </div>
-        {canEdit && (
-          <Button asChild variant="outline">
-            <Link to={`/plots/${plot.id}/edit`}>
-              <Pencil /> Edit
-            </Link>
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {canReserve && plot.status === 'available' && (
+            <ReservePlotDialog plotId={plot.id} plotNumber={plot.plot_number} />
+          )}
+          {canEdit && (
+            <Button asChild variant="outline">
+              <Link to={`/plots/${plot.id}/edit`}>
+                <Pencil /> Edit
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

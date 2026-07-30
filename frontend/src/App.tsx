@@ -21,6 +21,7 @@ import { ProjectCreatePage } from '@/features/projects/pages/project-create-page
 import { ProjectDetailPage } from '@/features/projects/pages/project-detail-page'
 import { ProjectEditPage } from '@/features/projects/pages/project-edit-page'
 import { ProjectsListPage } from '@/features/projects/pages/projects-list-page'
+import { ReservationsListPage } from '@/features/reservations/pages/reservations-list-page'
 
 function AppRoutes() {
   return (
@@ -42,6 +43,7 @@ function AppRoutes() {
         <Route path="/plots/new" element={<PlotCreatePage />} />
         <Route path="/plots/:id" element={<PlotDetailPage />} />
         <Route path="/plots/:id/edit" element={<PlotEditPage />} />
+        <Route path="/reservations" element={<ReservationsListPage />} />
         <Route path="/crm/leads" element={<LeadsPipelinePage />} />
         <Route path="/crm/leads/new" element={<LeadCreatePage />} />
         <Route path="/crm/leads/:id" element={<LeadDetailPage />} />

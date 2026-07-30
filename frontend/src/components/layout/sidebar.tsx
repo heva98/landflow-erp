@@ -1,5 +1,6 @@
 import {
   Building2,
+  CalendarClock,
   ClipboardList,
   Contact,
   LandPlot,
@@ -24,6 +25,7 @@ const navItems: NavItem[] = [
   { label: 'Projects', icon: Building2, path: '/projects' },
   { label: 'Plots', icon: LandPlot, path: '/plots' },
   { label: 'Survey', icon: Map },
+  { label: 'Reservations', icon: CalendarClock, path: '/reservations' },
   { label: 'Leads', icon: Contact, path: '/crm/leads' },
   { label: 'Customers', icon: Users, path: '/crm/customers' },
   { label: 'Sales', icon: Receipt },
