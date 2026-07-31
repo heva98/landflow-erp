@@ -68,6 +68,8 @@ export interface LeadListParams {
   status?: LeadStatus
   source?: LeadSource
   interested_project?: string
+  assigned_to?: string
+  created_after?: string
   search?: string
   page?: number
   page_size?: number
@@ -84,6 +86,9 @@ export interface LeadInput {
   referred_by: string | null
   assigned_to: string | null
 }
+
+// Partial lead patch used for fast board interactions (drag-to-status, bulk actions).
+export type LeadPatch = Partial<LeadInput>
 
 export const CUSTOMER_TYPES = ['individual', 'organization'] as const
 export type CustomerType = (typeof CUSTOMER_TYPES)[number]
