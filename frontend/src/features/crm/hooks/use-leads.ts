@@ -6,10 +6,11 @@ import {
   deleteLead,
   fetchLead,
   fetchLeads,
+  patchLead,
   updateLead,
   updateLeadStatus,
 } from '../api/crm-api'
-import type { LeadInput, LeadListParams, LeadStatus } from '../types'
+import type { LeadInput, LeadListParams, LeadPatch, LeadStatus } from '../types'
 
 export function useLeadsQuery(params: LeadListParams = {}) {
   return useQuery({
@@ -50,6 +51,17 @@ export function useUpdateLeadStatusMutation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ id, status }: { id: string; status: LeadStatus }) => updateLeadStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads'] })
+    },
+  })
+}
+
+export function useBulkPatchLeadsMutation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ ids, patch }: { ids: string[]; patch: LeadPatch }) =>
+      Promise.all(ids.map((id) => patchLead(id, patch))),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] })
     },

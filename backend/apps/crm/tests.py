@@ -198,6 +198,23 @@ def test_filter_leads_by_status(api_client, crm_officer, lead):
 
 
 @pytest.mark.django_db
+def test_filter_leads_by_created_after(api_client, crm_officer, lead):
+    from datetime import timedelta
+
+    from django.utils import timezone
+
+    old_lead = Lead.objects.create(full_name='Old Lead', source=Lead.Source.WEBSITE)
+    Lead.objects.filter(pk=old_lead.pk).update(created_at=timezone.now() - timedelta(days=30))
+
+    api_client.force_authenticate(user=crm_officer)
+    cutoff = (timezone.now() - timedelta(days=7)).isoformat()
+    response = api_client.get(reverse('lead-list'), {'created_after': cutoff})
+    assert response.status_code == status.HTTP_200_OK
+    names = {result['full_name'] for result in response.data['results']}
+    assert names == {'John Mushi'}
+
+
+@pytest.mark.django_db
 def test_search_customers_by_name(api_client, crm_officer, customer):
     api_client.force_authenticate(user=crm_officer)
     response = api_client.get(reverse('customer-list'), {'search': 'Amina'})

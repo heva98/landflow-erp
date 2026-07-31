@@ -10,6 +10,7 @@ import type {
   Lead,
   LeadInput,
   LeadListParams,
+  LeadPatch,
   LeadStatus,
   Note,
   NoteInput,
@@ -37,9 +38,13 @@ export async function updateLead(id: string, input: LeadInput): Promise<Lead> {
   return response.data
 }
 
-export async function updateLeadStatus(id: string, status: LeadStatus): Promise<Lead> {
-  const response = await apiClient.patch<Lead>(`/leads/${id}/`, { status })
+export async function patchLead(id: string, patch: LeadPatch): Promise<Lead> {
+  const response = await apiClient.patch<Lead>(`/leads/${id}/`, patch)
   return response.data
+}
+
+export async function updateLeadStatus(id: string, status: LeadStatus): Promise<Lead> {
+  return patchLead(id, { status })
 }
 
 export async function deleteLead(id: string): Promise<void> {

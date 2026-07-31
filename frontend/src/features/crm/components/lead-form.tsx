@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
 import { Loader2 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -36,9 +36,20 @@ interface LeadFormProps {
   defaultValues?: Partial<LeadFormValues>
   submitLabel: string
   onSubmit: (input: LeadInput) => Promise<unknown>
+  onCancel?: () => void
+  footerExtra?: ReactNode
 }
 
-export function LeadForm({ defaultValues, submitLabel, onSubmit }: LeadFormProps) {
+function FormSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="flex flex-col gap-3">
+      <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{title}</h3>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">{children}</div>
+    </div>
+  )
+}
+
+export function LeadForm({ defaultValues, submitLabel, onSubmit, onCancel, footerExtra }: LeadFormProps) {
   const [formError, setFormError] = useState<string | null>(null)
   const { data: projects } = useProjectsQuery()
   const { data: customers } = useCustomersQuery()
@@ -87,9 +98,9 @@ export function LeadForm({ defaultValues, submitLabel, onSubmit }: LeadFormProps
   }
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="flex max-w-3xl flex-col gap-5" noValidate>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="flex flex-col gap-1.5">
+    <form onSubmit={handleSubmit(submit)} className="flex max-w-3xl flex-col gap-6" noValidate>
+      <FormSection title="Who">
+        <div className="flex flex-col gap-1.5 sm:col-span-2">
           <Label htmlFor="full_name">Full name</Label>
           <Input id="full_name" aria-invalid={Boolean(errors.full_name)} {...register('full_name')} />
           {errors.full_name && <p className="text-sm text-destructive">{errors.full_name.message}</p>}
@@ -105,7 +116,9 @@ export function LeadForm({ defaultValues, submitLabel, onSubmit }: LeadFormProps
           <Input id="email" type="email" aria-invalid={Boolean(errors.email)} {...register('email')} />
           {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
         </div>
+      </FormSection>
 
+      <FormSection title="Where they came from">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="source">Source</Label>
           <Controller
@@ -128,6 +141,31 @@ export function LeadForm({ defaultValues, submitLabel, onSubmit }: LeadFormProps
           />
         </div>
 
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="referred_by">Referred by</Label>
+          <Controller
+            control={control}
+            name="referred_by"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id="referred_by">
+                  <SelectValue placeholder="None" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>None</SelectItem>
+                  {customers?.results.map((customer) => (
+                    <SelectItem key={customer.id} value={customer.id}>
+                      {customer.full_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+      </FormSection>
+
+      <FormSection title="Pipeline">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="status">Status</Label>
           <Controller
@@ -174,29 +212,6 @@ export function LeadForm({ defaultValues, submitLabel, onSubmit }: LeadFormProps
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="referred_by">Referred by</Label>
-          <Controller
-            control={control}
-            name="referred_by"
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="referred_by">
-                  <SelectValue placeholder="None" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={NONE}>None</SelectItem>
-                  {customers?.results.map((customer) => (
-                    <SelectItem key={customer.id} value={customer.id}>
-                      {customer.full_name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </div>
-
-        <div className="flex flex-col gap-1.5">
           <Label htmlFor="assigned_to">Assigned to</Label>
           <Controller
             control={control}
@@ -222,18 +237,26 @@ export function LeadForm({ defaultValues, submitLabel, onSubmit }: LeadFormProps
         {status === 'lost' && (
           <div className="flex flex-col gap-1.5 sm:col-span-2">
             <Label htmlFor="lost_reason">Lost reason</Label>
-            <Textarea id="lost_reason" rows={3} {...register('lost_reason')} />
+            <Textarea id="lost_reason" rows={2} {...register('lost_reason')} />
           </div>
         )}
-      </div>
+      </FormSection>
 
       {formError && <p className="text-sm text-destructive">{formError}</p>}
 
-      <div>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting && <Loader2 className="animate-spin" />}
-          {submitLabel}
-        </Button>
+      <div className="flex items-center justify-between gap-3">
+        {footerExtra}
+        <div className="flex flex-1 items-center justify-end gap-2">
+          {onCancel && (
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Cancel
+            </Button>
+          )}
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting && <Loader2 className="animate-spin" />}
+            {submitLabel}
+          </Button>
+        </div>
       </div>
     </form>
   )
