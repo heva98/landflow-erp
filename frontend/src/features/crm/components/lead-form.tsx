@@ -2,13 +2,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { useUsersQuery } from '@/features/accounts/hooks/use-users'
 import { useProjectsQuery } from '@/features/projects/hooks/use-projects'
 
 import { useCustomersQuery } from '../hooks/use-customers'
@@ -22,8 +24,10 @@ const leadFormSchema = z.object({
   email: z.union([z.string().email('Enter a valid email'), z.literal('')]).optional(),
   source: z.enum(LEAD_SOURCES),
   status: z.enum(LEAD_STATUSES),
+  lost_reason: z.string().max(2000).optional(),
   interested_project: z.string().optional(),
   referred_by: z.string().optional(),
+  assigned_to: z.string().optional(),
 })
 
 export type LeadFormValues = z.infer<typeof leadFormSchema>
@@ -38,6 +42,7 @@ export function LeadForm({ defaultValues, submitLabel, onSubmit }: LeadFormProps
   const [formError, setFormError] = useState<string | null>(null)
   const { data: projects } = useProjectsQuery()
   const { data: customers } = useCustomersQuery()
+  const { data: users } = useUsersQuery()
 
   const {
     register,
@@ -51,9 +56,12 @@ export function LeadForm({ defaultValues, submitLabel, onSubmit }: LeadFormProps
       status: 'new',
       interested_project: NONE,
       referred_by: NONE,
+      assigned_to: NONE,
       ...defaultValues,
     },
   })
+
+  const status = useWatch({ control, name: 'status' })
 
   async function submit(values: LeadFormValues) {
     setFormError(null)
@@ -64,8 +72,10 @@ export function LeadForm({ defaultValues, submitLabel, onSubmit }: LeadFormProps
         email: values.email ?? '',
         source: values.source,
         status: values.status,
+        lost_reason: values.status === 'lost' ? (values.lost_reason ?? '') : '',
         interested_project: values.interested_project === NONE ? null : (values.interested_project ?? null),
         referred_by: values.referred_by === NONE ? null : (values.referred_by ?? null),
+        assigned_to: values.assigned_to === NONE ? null : (values.assigned_to ?? null),
       })
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 403) {
@@ -185,6 +195,36 @@ export function LeadForm({ defaultValues, submitLabel, onSubmit }: LeadFormProps
             )}
           />
         </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="assigned_to">Assigned to</Label>
+          <Controller
+            control={control}
+            name="assigned_to"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id="assigned_to">
+                  <SelectValue placeholder="Unassigned" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>Unassigned</SelectItem>
+                  {users?.results.map((user) => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.first_name || user.last_name ? `${user.first_name} ${user.last_name}`.trim() : user.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+
+        {status === 'lost' && (
+          <div className="flex flex-col gap-1.5 sm:col-span-2">
+            <Label htmlFor="lost_reason">Lost reason</Label>
+            <Textarea id="lost_reason" rows={3} {...register('lost_reason')} />
+          </div>
+        )}
       </div>
 
       {formError && <p className="text-sm text-destructive">{formError}</p>}

@@ -76,6 +76,7 @@ class Lead(BaseModel):
     email = models.EmailField(blank=True)
     source = models.CharField(max_length=20, choices=Source.choices)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.NEW)
+    lost_reason = models.TextField(blank=True)
 
     organization = models.ForeignKey(
         Organization, null=True, blank=True, on_delete=models.SET_NULL, related_name='leads',

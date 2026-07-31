@@ -50,6 +50,7 @@ export interface Lead {
   email: string
   source: LeadSource
   status: LeadStatus
+  lost_reason: string
   organization: string | null
   organization_name: string | null
   interested_project: string | null
@@ -78,8 +79,10 @@ export interface LeadInput {
   email: string
   source: LeadSource
   status: LeadStatus
+  lost_reason: string
   interested_project: string | null
   referred_by: string | null
+  assigned_to: string | null
 }
 
 export const CUSTOMER_TYPES = ['individual', 'organization'] as const
@@ -123,3 +126,77 @@ export interface PaginatedResponse<T> {
   previous: string | null
   results: T[]
 }
+
+// --- Notes & communication log — both attach to a Lead, Customer or Organization. ---
+
+export type CRMTargetType = 'lead' | 'customer' | 'organization'
+
+export interface CRMTargetRef {
+  lead?: string
+  customer?: string
+  organization?: string
+}
+
+export interface CRMTargetFilterParams {
+  target_type?: CRMTargetType
+  object_id?: string
+}
+
+export interface Note {
+  id: string
+  target_type: CRMTargetType
+  target_id: string
+  author: string | null
+  author_name: string | null
+  body: string
+  created_at: string
+  updated_at: string
+}
+
+export interface NoteInput extends CRMTargetRef {
+  body: string
+}
+
+export type NoteListParams = CRMTargetFilterParams
+
+export const COMMUNICATION_CHANNELS = ['call', 'whatsapp', 'sms', 'email'] as const
+export type CommunicationChannel = (typeof COMMUNICATION_CHANNELS)[number]
+
+export const COMMUNICATION_CHANNEL_LABELS: Record<CommunicationChannel, string> = {
+  call: 'Call',
+  whatsapp: 'WhatsApp',
+  sms: 'SMS',
+  email: 'Email',
+}
+
+export const COMMUNICATION_DIRECTIONS = ['inbound', 'outbound'] as const
+export type CommunicationDirection = (typeof COMMUNICATION_DIRECTIONS)[number]
+
+export const COMMUNICATION_DIRECTION_LABELS: Record<CommunicationDirection, string> = {
+  inbound: 'Inbound',
+  outbound: 'Outbound',
+}
+
+export interface CommunicationLogEntry {
+  id: string
+  target_type: CRMTargetType
+  target_id: string
+  channel: CommunicationChannel
+  direction: CommunicationDirection
+  subject: string
+  body: string
+  occurred_at: string
+  logged_by: string | null
+  logged_by_name: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface CommunicationLogInput extends CRMTargetRef {
+  channel: CommunicationChannel
+  direction: CommunicationDirection
+  subject: string
+  body: string
+}
+
+export type CommunicationLogListParams = CRMTargetFilterParams

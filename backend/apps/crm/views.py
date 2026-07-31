@@ -1,7 +1,10 @@
+from django.db import transaction
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from apps.accounts.permissions import RoleBasedModelPermissions
 
@@ -43,6 +46,29 @@ class LeadViewSet(viewsets.ModelViewSet):
     filterset_class = LeadFilter
     search_fields = ['full_name', 'phone', 'email']
     ordering_fields = ['full_name', 'created_at', 'status']
+
+    @action(detail=True, methods=['post'])
+    def convert(self, request, pk=None):
+        lead = self.get_object()
+        if lead.converted_customer_id:
+            return Response({'detail': 'Lead has already been converted.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        with transaction.atomic():
+            customer = Customer.objects.create(
+                customer_type=(
+                    Customer.CustomerType.ORGANIZATION if lead.organization_id
+                    else Customer.CustomerType.INDIVIDUAL
+                ),
+                full_name=lead.full_name,
+                organization=lead.organization,
+                phone=lead.phone,
+                email=lead.email,
+            )
+            lead.converted_customer = customer
+            lead.status = Lead.Status.PURCHASED
+            lead.save(update_fields=['converted_customer', 'status', 'updated_at'])
+
+        return Response(self.get_serializer(lead).data)
 
 
 class NoteViewSet(viewsets.ModelViewSet):

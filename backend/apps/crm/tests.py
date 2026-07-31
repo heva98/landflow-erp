@@ -277,3 +277,71 @@ def test_filter_communications_by_target(api_client, crm_officer, customer, lead
     assert response.status_code == status.HTTP_200_OK
     assert response.data['count'] == 1
     assert response.data['results'][0]['channel'] == 'call'
+
+
+# --- Lost reason ---
+
+@pytest.mark.django_db
+def test_mark_lead_lost_with_reason(api_client, crm_officer, lead):
+    api_client.force_authenticate(user=crm_officer)
+    response = api_client.patch(reverse('lead-detail', args=[lead.id]), {
+        'status': 'lost', 'lost_reason': 'Bought a plot from a competitor.',
+    })
+    assert response.status_code == status.HTTP_200_OK
+    lead.refresh_from_db()
+    assert lead.status == Lead.Status.LOST
+    assert lead.lost_reason == 'Bought a plot from a competitor.'
+
+
+# --- Assign to a sales agent ---
+
+@pytest.mark.django_db
+def test_crm_officer_can_view_users_to_assign_a_lead(api_client, crm_officer, agent):
+    # accounts.view_user is granted to CRM-facing roles specifically so the
+    # "assign to" picker can list users.
+    api_client.force_authenticate(user=crm_officer)
+    response = api_client.get(reverse('user-list'))
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_assign_lead_to_a_sales_agent(api_client, crm_officer, lead, agent):
+    api_client.force_authenticate(user=crm_officer)
+    response = api_client.patch(reverse('lead-detail', args=[lead.id]), {'assigned_to': str(agent.id)})
+    assert response.status_code == status.HTTP_200_OK
+    lead.refresh_from_db()
+    assert lead.assigned_to == agent
+
+
+# --- Convert lead to customer ---
+
+@pytest.mark.django_db
+def test_convert_lead_creates_customer_and_updates_lead(api_client, crm_officer, lead):
+    api_client.force_authenticate(user=crm_officer)
+    response = api_client.post(reverse('lead-convert', args=[lead.id]))
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['status'] == 'purchased'
+    assert response.data['converted_customer'] is not None
+
+    lead.refresh_from_db()
+    assert lead.status == Lead.Status.PURCHASED
+    customer = Customer.objects.get(pk=lead.converted_customer_id)
+    assert customer.full_name == lead.full_name
+    assert customer.phone == lead.phone
+
+
+@pytest.mark.django_db
+def test_convert_lead_twice_is_rejected(api_client, crm_officer, lead):
+    api_client.force_authenticate(user=crm_officer)
+    first = api_client.post(reverse('lead-convert', args=[lead.id]))
+    assert first.status_code == status.HTTP_200_OK
+
+    second = api_client.post(reverse('lead-convert', args=[lead.id]))
+    assert second.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_convert_lead_requires_lead_permission(api_client, surveyor, lead):
+    api_client.force_authenticate(user=surveyor)
+    response = api_client.post(reverse('lead-convert', args=[lead.id]))
+    assert response.status_code == status.HTTP_403_FORBIDDEN

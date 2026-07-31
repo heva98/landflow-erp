@@ -23,9 +23,24 @@ def administrator_role(db):
 
 
 @pytest.fixture
+def customer_role(db):
+    # Not granted any permissions anywhere in the seeding migrations — an
+    # internal-admin-API role with genuinely nothing, unlike Sales Agent
+    # which now has accounts.view_user for the CRM "assign to" picker.
+    return Role.objects.get(name='Customer')
+
+
+@pytest.fixture
 def user(db, sales_agent_role):
     return User.objects.create_user(
         email='agent@landflow.co.tz', password='s3cure-pass', role=sales_agent_role,
+    )
+
+
+@pytest.fixture
+def user_without_permissions(db, customer_role):
+    return User.objects.create_user(
+        email='no-perms@landflow.co.tz', password='s3cure-pass', role=customer_role,
     )
 
 
@@ -106,8 +121,8 @@ def test_auditor_has_read_only_access(db):
 
 
 @pytest.mark.django_db
-def test_user_without_permission_gets_403_on_users_endpoint(api_client, user):
-    api_client.force_authenticate(user=user)
+def test_user_without_permission_gets_403_on_users_endpoint(api_client, user_without_permissions):
+    api_client.force_authenticate(user=user_without_permissions)
     response = api_client.get(reverse('user-list'))
     assert response.status_code == status.HTTP_403_FORBIDDEN
 

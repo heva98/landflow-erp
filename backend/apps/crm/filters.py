@@ -4,9 +4,14 @@ from .models import CommunicationLog, Customer, Lead, Note
 
 
 class LeadFilter(django_filters.FilterSet):
+    created_after = django_filters.DateTimeFilter(field_name='created_at', lookup_expr='gte')
+
     class Meta:
         model = Lead
-        fields = ['status', 'source', 'organization', 'interested_project', 'assigned_to', 'referred_by']
+        fields = [
+            'status', 'source', 'organization', 'interested_project', 'assigned_to', 'referred_by',
+            'created_after',
+        ]
 
 
 class CustomerFilter(django_filters.FilterSet):

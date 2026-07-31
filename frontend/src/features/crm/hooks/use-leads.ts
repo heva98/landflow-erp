@@ -1,6 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { createLead, deleteLead, fetchLead, fetchLeads, updateLead, updateLeadStatus } from '../api/crm-api'
+import {
+  convertLead,
+  createLead,
+  deleteLead,
+  fetchLead,
+  fetchLeads,
+  updateLead,
+  updateLeadStatus,
+} from '../api/crm-api'
 import type { LeadInput, LeadListParams, LeadStatus } from '../types'
 
 export function useLeadsQuery(params: LeadListParams = {}) {
@@ -44,6 +52,17 @@ export function useUpdateLeadStatusMutation() {
     mutationFn: ({ id, status }: { id: string; status: LeadStatus }) => updateLeadStatus(id, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leads'] })
+    },
+  })
+}
+
+export function useConvertLeadMutation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: convertLead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads'] })
+      queryClient.invalidateQueries({ queryKey: ['customers'] })
     },
   })
 }

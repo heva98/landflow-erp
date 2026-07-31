@@ -24,8 +24,10 @@ export function LeadEditPage() {
           email: lead.email,
           source: lead.source,
           status: lead.status,
+          lost_reason: lead.lost_reason,
           interested_project: lead.interested_project ?? 'none',
           referred_by: lead.referred_by ?? 'none',
+          assigned_to: lead.assigned_to ?? 'none',
         }}
         onSubmit={async (input) => {
           await updateLead.mutateAsync(input)

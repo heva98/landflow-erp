@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/features/auth/hooks/use-auth'
 
+import { CommunicationLogPanel } from '../components/communication-log-panel'
+import { NotesPanel } from '../components/notes-panel'
 import { useCustomerQuery } from '../hooks/use-customers'
 import { canEditCustomers } from '../lib/permissions'
 import { CUSTOMER_TYPE_LABELS } from '../types'
@@ -75,6 +77,11 @@ export function CustomerDetailPage() {
           </div>
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <NotesPanel targetType="customer" targetId={customer.id} />
+        <CommunicationLogPanel targetType="customer" targetId={customer.id} />
+      </div>
     </div>
   )
 }
