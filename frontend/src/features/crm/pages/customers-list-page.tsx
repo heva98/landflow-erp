@@ -1,6 +1,6 @@
 import { Plus, Search } from 'lucide-react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -12,6 +12,7 @@ import { useCustomersQuery } from '../hooks/use-customers'
 import { CUSTOMER_TYPE_LABELS, CUSTOMER_TYPES, type CustomerType } from '../types'
 
 export function CustomersListPage() {
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [customerType, setCustomerType] = useState<CustomerType | 'all'>('all')
 
@@ -90,7 +91,11 @@ export function CustomersListPage() {
               </TableRow>
             )}
             {data?.results.map((customer) => (
-              <TableRow key={customer.id}>
+              <TableRow
+                key={customer.id}
+                className="cursor-pointer"
+                onClick={() => navigate(`/crm/customers/${customer.id}`)}
+              >
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/crm/customers/${customer.id}`} className="hover:underline">
                     {customer.full_name}

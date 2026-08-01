@@ -1,6 +1,6 @@
 import { Plus, Search } from 'lucide-react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,6 +15,7 @@ import { canViewProjectFinancials } from '../lib/permissions'
 import { PROJECT_STATUS_LABELS, PROJECT_STATUSES, type ProjectStatus } from '../types'
 
 export function ProjectsListPage() {
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<ProjectStatus | 'all'>('all')
   const { user } = useAuth()
@@ -101,7 +102,7 @@ export function ProjectsListPage() {
               </TableRow>
             )}
             {data?.results.map((project) => (
-              <TableRow key={project.id}>
+              <TableRow key={project.id} className="cursor-pointer" onClick={() => navigate(`/projects/${project.id}`)}>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/projects/${project.id}`} className="hover:underline">
                     {project.name}

@@ -1,6 +1,6 @@
 import { Plus, Search } from 'lucide-react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,6 +14,7 @@ import { usePlotsQuery } from '../hooks/use-plots'
 import { PLOT_STATUS_LABELS, PLOT_STATUSES, type PlotStatus } from '../types'
 
 export function PlotsListPage() {
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<PlotStatus | 'all'>('all')
   const [projectId, setProjectId] = useState<string>('all')
@@ -110,7 +111,7 @@ export function PlotsListPage() {
               </TableRow>
             )}
             {data?.results.map((plot) => (
-              <TableRow key={plot.id}>
+              <TableRow key={plot.id} className="cursor-pointer" onClick={() => navigate(`/plots/${plot.id}`)}>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/plots/${plot.id}`} className="hover:underline">
                     {plot.plot_number}
