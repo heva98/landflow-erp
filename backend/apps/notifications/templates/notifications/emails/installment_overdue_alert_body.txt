@@ -1,0 +1,12 @@
+Dear {{ customer_name }},
+
+Installment {{ sequence }} of {{ total_installments }} for your plot {{ plot_number }} at {{ project_name }} (sale {{ sale_number }}) was due on {{ due_date }} and is now overdue.
+
+  Amount due: TZS {{ amount_due }}
+  Penalty applied: TZS {{ penalty_amount }}
+  Total outstanding on this installment: TZS {{ balance }}
+
+Please make payment as soon as possible to avoid further penalties.
+
+Thank you,
+LandFlow

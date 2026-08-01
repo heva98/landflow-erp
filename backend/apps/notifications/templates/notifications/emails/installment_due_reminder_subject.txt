@@ -1,0 +1,1 @@
+Payment reminder: installment {{ sequence }} due {{ due_date }} - {{ project_name }} {{ plot_number }}

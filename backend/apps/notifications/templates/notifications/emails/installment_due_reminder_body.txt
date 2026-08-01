@@ -1,0 +1,10 @@
+Dear {{ customer_name }},
+
+This is a reminder that installment {{ sequence }} of {{ total_installments }} for your plot {{ plot_number }} at {{ project_name }} (sale {{ sale_number }}) is due on {{ due_date }}.
+
+  Amount due: TZS {{ amount_due }}
+  Outstanding balance on this installment: TZS {{ balance }}
+
+Please make your payment on or before the due date to avoid a late penalty.
+
+Thank you for choosing LandFlow.
