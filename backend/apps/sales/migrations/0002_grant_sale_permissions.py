@@ -1,12 +1,13 @@
 from django.db import migrations
 
 # Roles that create, cancel and process sales day to day.
-FULL_ROLES = ['Managing Director', 'Finance Manager', 'Sales Manager', 'Sales Agent', 'Cashier']
+FULL_ROLES = ['Managing Director', 'Sales Manager', 'Sales Agent', 'Cashier']
 
-# Everyone else who plausibly needs to see sale records, view-only.
+# Everyone else who plausibly needs to see sale records, view-only — Finance
+# Manager and Accountant report on sales but don't originate them here.
 VIEWER_ROLES = [
-    'CRM Officer', 'Receptionist', 'Surveyor', 'Legal Officer',
-    'Marketing Officer', 'Accountant', 'Document Officer', 'Site Manager',
+    'Finance Manager', 'Accountant', 'CRM Officer', 'Receptionist',
+    'Surveyor', 'Legal Officer', 'Marketing Officer', 'Document Officer', 'Site Manager',
 ]
 
 MODELS = ['sale', 'invoice', 'receipt']

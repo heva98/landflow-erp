@@ -192,27 +192,6 @@ def test_cannot_reserve_a_plot_that_is_not_available(api_client, agent, plot, cu
 
 
 @pytest.mark.django_db
-def test_convert_marks_reservation_converted_and_plot_sold(api_client, agent, reservation, plot):
-    api_client.force_authenticate(user=agent)
-    response = api_client.post(reverse('reservation-convert', args=[reservation.id]))
-    assert response.status_code == status.HTTP_200_OK
-    reservation.refresh_from_db()
-    plot.refresh_from_db()
-    assert reservation.status == Reservation.Status.CONVERTED
-    assert reservation.converted_at is not None
-    assert plot.status == Plot.Status.SOLD
-
-
-@pytest.mark.django_db
-def test_convert_rejects_non_active_reservation(api_client, agent, reservation):
-    reservation.status = Reservation.Status.CANCELLED
-    reservation.save(update_fields=['status'])
-    api_client.force_authenticate(user=agent)
-    response = api_client.post(reverse('reservation-convert', args=[reservation.id]))
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-
-
-@pytest.mark.django_db
 def test_cancel_marks_reservation_cancelled_and_plot_available(api_client, agent, reservation, plot):
     api_client.force_authenticate(user=agent)
     response = api_client.post(reverse('reservation-cancel', args=[reservation.id]))

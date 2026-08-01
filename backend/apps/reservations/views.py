@@ -22,21 +22,9 @@ class ReservationViewSet(viewsets.ModelViewSet):
     filterset_class = ReservationFilter
     ordering_fields = ['reserved_at', 'expiry_date', 'created_at', 'status']
 
-    @action(detail=True, methods=['post'])
-    def convert(self, request, pk=None):
-        reservation = self.get_object()
-        if reservation.status != Reservation.Status.ACTIVE:
-            return Response(
-                {'detail': 'Only an active reservation can be converted.'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        reservation.status = Reservation.Status.CONVERTED
-        reservation.converted_at = timezone.now()
-        reservation.save(update_fields=['status', 'converted_at', 'updated_at'])
-        # Sales module (spec Module 8) hasn't landed yet, so there is no Sale
-        # record to create here — the plot is simply marked Sold.
-        Plot.objects.filter(pk=reservation.plot_id).update(status=Plot.Status.SOLD)
-        return Response(self.get_serializer(reservation).data)
+    # Converting a reservation into a sale is handled by the Sales module —
+    # POST /sales/ with `reservation` set marks this reservation Converted
+    # and the plot Sold as part of creating the Sale, Invoice and Receipt.
 
     @action(detail=True, methods=['post'])
     def cancel(self, request, pk=None):
