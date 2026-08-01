@@ -46,11 +46,20 @@ export function SaleDetailPage() {
           <SaleStatusBadge status={sale.status} />
         </div>
         <div className="flex gap-2">
-          {canSetUpPaymentPlan && sale.sale_type === 'installment' && sale.status === 'active' && Number(sale.balance_due) > 0 && (
+          {sale.sale_type === 'installment' && sale.payment_plan_id && (
             <Button asChild variant="outline">
-              <Link to={`/installments/new?sale=${sale.id}`}>Set up payment plan</Link>
+              <Link to={`/installments/${sale.payment_plan_id}`}>View payment plan</Link>
             </Button>
           )}
+          {canSetUpPaymentPlan &&
+            sale.sale_type === 'installment' &&
+            sale.status === 'active' &&
+            !sale.payment_plan_id &&
+            Number(sale.balance_due) > 0 && (
+              <Button asChild variant="outline">
+                <Link to={`/installments/new?sale=${sale.id}`}>Set up payment plan</Link>
+              </Button>
+            )}
           {canManage && sale.status === 'active' && (
             <Button
               variant="destructive"

@@ -24,7 +24,7 @@ class SaleViewSet(
     """
 
     queryset = Sale.objects.select_related(
-        'plot', 'customer', 'reservation', 'sold_by', 'invoice',
+        'plot', 'customer', 'reservation', 'sold_by', 'invoice', 'payment_plan',
     ).prefetch_related('receipts').all()
     serializer_class = SaleSerializer
     permission_classes = [IsAuthenticated, RoleBasedModelPermissions]

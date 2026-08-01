@@ -2,6 +2,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 import pytest
+from django.core import mail
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
@@ -9,12 +10,16 @@ from rest_framework.test import APIClient
 
 from apps.accounts.models import Role, User
 from apps.crm.models import Customer
+from apps.notifications.models import Notification
 from apps.plots.models import Plot
 from apps.projects.models import Project
 from apps.sales.models import Sale
 
 from .models import Installment, PaymentPlan, _add_months
-from .tasks import flag_overdue_installments
+from .tasks import (
+    DUE_REMINDER_DAYS_BEFORE, flag_overdue_installments, send_installment_due_reminders,
+    send_installment_overdue_alerts,
+)
 
 
 @pytest.fixture
@@ -321,3 +326,78 @@ def test_flag_overdue_installments_ignores_paid(api_client, cashier, payment_pla
 
     assert flagged == 0
     assert first.status == Installment.Status.PAID
+
+
+@pytest.mark.django_db
+def test_send_installment_due_reminders_emails_customer_and_is_idempotent(payment_plan, customer):
+    customer.email = 'juma@example.com'
+    customer.save(update_fields=['email'])
+
+    first = payment_plan.installments.get(sequence=1)
+    first.due_date = timezone.localdate() + timedelta(days=DUE_REMINDER_DAYS_BEFORE)
+    first.save(update_fields=['due_date'])
+
+    sent = send_installment_due_reminders()
+    assert sent == 1
+    assert len(mail.outbox) == 1
+    assert customer.email in mail.outbox[0].to
+
+    notification = Notification.objects.get(
+        notification_type=Notification.Type.INSTALLMENT_DUE_REMINDER, object_id=str(first.id),
+    )
+    assert notification.status == Notification.Status.SENT
+    assert notification.sent_at is not None
+
+    # A second run on the same day must not resend it.
+    sent_again = send_installment_due_reminders()
+    assert sent_again == 0
+    assert len(mail.outbox) == 1
+
+
+@pytest.mark.django_db
+def test_send_installment_due_reminders_skips_customer_without_email(payment_plan):
+    first = payment_plan.installments.get(sequence=1)
+    first.due_date = timezone.localdate() + timedelta(days=DUE_REMINDER_DAYS_BEFORE)
+    first.save(update_fields=['due_date'])
+
+    sent = send_installment_due_reminders()
+
+    assert sent == 0
+    assert len(mail.outbox) == 0
+    assert not Notification.objects.exists()
+
+
+@pytest.mark.django_db
+def test_send_installment_due_reminders_ignores_installments_not_due_on_target_date(payment_plan, customer):
+    customer.email = 'juma@example.com'
+    customer.save(update_fields=['email'])
+
+    sent = send_installment_due_reminders()
+
+    assert sent == 0
+    assert len(mail.outbox) == 0
+
+
+@pytest.mark.django_db
+def test_send_installment_overdue_alerts_emails_customer_and_is_idempotent(payment_plan, customer):
+    customer.email = 'juma@example.com'
+    customer.save(update_fields=['email'])
+
+    first = payment_plan.installments.get(sequence=1)
+    first.status = Installment.Status.OVERDUE
+    first.save(update_fields=['status'])
+
+    sent = send_installment_overdue_alerts()
+    assert sent == 1
+    assert len(mail.outbox) == 1
+    assert customer.email in mail.outbox[0].to
+
+    notification = Notification.objects.get(
+        notification_type=Notification.Type.INSTALLMENT_OVERDUE_ALERT, object_id=str(first.id),
+    )
+    assert notification.status == Notification.Status.SENT
+
+    # Re-running the alert task must not resend for the same installment.
+    sent_again = send_installment_overdue_alerts()
+    assert sent_again == 0
+    assert len(mail.outbox) == 1

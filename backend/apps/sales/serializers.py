@@ -32,6 +32,7 @@ class SaleSerializer(serializers.ModelSerializer):
     balance_due = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
     invoice = InvoiceSerializer(read_only=True)
     receipts = ReceiptSerializer(many=True, read_only=True)
+    payment_plan_id = serializers.SerializerMethodField()
 
     # Write-only inputs used to create the down-payment receipt; not Sale fields.
     payment_method = serializers.ChoiceField(choices=Receipt.PaymentMethod.choices, write_only=True)
@@ -45,7 +46,7 @@ class SaleSerializer(serializers.ModelSerializer):
             'sale_price', 'discount', 'down_payment', 'net_price', 'balance_due',
             'payment_method', 'reference',
             'sold_at', 'cancelled_at', 'sold_by', 'sold_by_name', 'notes',
-            'invoice', 'receipts',
+            'invoice', 'receipts', 'payment_plan_id',
             'created_at', 'updated_at',
         ]
         read_only_fields = [
@@ -56,6 +57,12 @@ class SaleSerializer(serializers.ModelSerializer):
             'plot': {'required': False},
             'customer': {'required': False},
         }
+
+    def get_payment_plan_id(self, obj):
+        # apps.installments depends on apps.sales, not the other way round, so
+        # this is read through the reverse accessor rather than an import.
+        plan = getattr(obj, 'payment_plan', None)
+        return plan.id if plan else None
 
     def validate(self, attrs):
         reservation = attrs.get('reservation')

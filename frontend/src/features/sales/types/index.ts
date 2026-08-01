@@ -67,6 +67,7 @@ export interface Sale {
   notes: string
   invoice: Invoice
   receipts: Receipt[]
+  payment_plan_id: string | null
   created_at: string
   updated_at: string
 }

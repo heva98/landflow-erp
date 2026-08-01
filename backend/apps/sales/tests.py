@@ -304,3 +304,30 @@ def test_cancel_rejects_already_cancelled_sale(api_client, agent, sale):
 
     response = api_client.post(reverse('sale-cancel', args=[sale.id]))
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_payment_plan_id_is_null_when_no_plan_exists(api_client, agent, sale):
+    api_client.force_authenticate(user=agent)
+    response = api_client.get(reverse('sale-detail', args=[sale.id]))
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['payment_plan_id'] is None
+
+
+@pytest.mark.django_db
+def test_payment_plan_id_reflects_existing_plan(api_client, agent, plot, customer):
+    from apps.installments.models import PaymentPlan
+
+    installment_sale = Sale.objects.create(
+        plot=plot, customer=customer, sale_type=Sale.SaleType.INSTALLMENT,
+        sale_price=Decimal('20000000.00'), down_payment=Decimal('5000000.00'),
+    )
+    plan = PaymentPlan.objects.create(
+        sale=installment_sale, principal_amount=Decimal('15000000.00'), number_of_installments=3,
+        installment_amount=Decimal('5000000.00'), start_date=timezone.localdate() + timedelta(days=30),
+    )
+
+    api_client.force_authenticate(user=agent)
+    response = api_client.get(reverse('sale-detail', args=[installment_sale.id]))
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['payment_plan_id'] == str(plan.id)

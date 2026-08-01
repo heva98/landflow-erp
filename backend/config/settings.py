@@ -157,6 +157,20 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=['http://localhost:5173'])
 
 
+# Email
+# Defaults to printing emails to the console in dev; set EMAIL_BACKEND to
+# 'django.core.mail.backends.smtp.EmailBackend' and the SMTP_* vars in
+# production.
+
+EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = env('EMAIL_HOST', default='localhost')
+EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='LandFlow ERP <noreply@landflow.co.tz>')
+
+
 # Celery
 
 CELERY_BROKER_URL = env('CELERY_BROKER_URL', default='redis://localhost:6379/0')
@@ -174,5 +188,13 @@ CELERY_BEAT_SCHEDULE = {
     'flag-overdue-installments': {
         'task': 'apps.installments.tasks.flag_overdue_installments',
         'schedule': crontab(hour=1, minute=0),
+    },
+    'send-installment-due-reminders': {
+        'task': 'apps.installments.tasks.send_installment_due_reminders',
+        'schedule': crontab(hour=7, minute=0),
+    },
+    'send-installment-overdue-alerts': {
+        'task': 'apps.installments.tasks.send_installment_overdue_alerts',
+        'schedule': crontab(hour=7, minute=30),
     },
 }

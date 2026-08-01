@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'lucide-react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -40,7 +40,11 @@ export function PaymentPlanDetailPage() {
           <ArrowLeft className="size-4" />
         </Button>
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">{plan.sale_number}</h1>
+          <h1 className="text-2xl font-semibold text-foreground">
+            <Link to={`/sales/${plan.sale}`} className="hover:underline">
+              {plan.sale_number}
+            </Link>
+          </h1>
           <p className="text-sm text-muted-foreground">{plan.customer_name}</p>
         </div>
         <PaymentPlanStatusBadge status={plan.status} />

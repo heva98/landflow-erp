@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
 import { Loader2 } from 'lucide-react'
-import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useEffect, useState } from 'react'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -52,11 +52,23 @@ export function SaleForm({ reservationId, initialPlotId, onSuccess }: SaleFormPr
     control,
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<SaleFormValues>({
     resolver: zodResolver(buildSaleFormSchema(!reservationId)),
     defaultValues: { discount: 0, plot: initialPlotId },
   })
+
+  const saleType = useWatch({ control, name: 'sale_type' })
+  const salePrice = useWatch({ control, name: 'sale_price' })
+  const discount = useWatch({ control, name: 'discount' })
+  const isCashSale = saleType === 'cash'
+
+  useEffect(() => {
+    if (isCashSale) {
+      setValue('down_payment', Math.max((salePrice || 0) - (discount || 0), 0), { shouldValidate: true })
+    }
+  }, [isCashSale, salePrice, discount, setValue])
 
   async function submit(values: SaleFormValues) {
     setFormError(null)
@@ -107,7 +119,7 @@ export function SaleForm({ reservationId, initialPlotId, onSuccess }: SaleFormPr
               control={control}
               name="plot"
               render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select value={field.value ?? ''} onValueChange={field.onChange}>
                   <SelectTrigger id="plot" aria-invalid={Boolean(errors.plot)}>
                     <SelectValue placeholder="Select an available plot" />
                   </SelectTrigger>
@@ -130,7 +142,7 @@ export function SaleForm({ reservationId, initialPlotId, onSuccess }: SaleFormPr
               control={control}
               name="customer"
               render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select value={field.value ?? ''} onValueChange={field.onChange}>
                   <SelectTrigger id="customer" aria-invalid={Boolean(errors.customer)}>
                     <SelectValue placeholder="Select a customer" />
                   </SelectTrigger>
@@ -156,7 +168,7 @@ export function SaleForm({ reservationId, initialPlotId, onSuccess }: SaleFormPr
             control={control}
             name="sale_type"
             render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
+              <Select value={field.value ?? ''} onValueChange={field.onChange}>
                 <SelectTrigger id="sale_type" aria-invalid={Boolean(errors.sale_type)}>
                   <SelectValue placeholder="Select a sale type" />
                 </SelectTrigger>
@@ -179,7 +191,7 @@ export function SaleForm({ reservationId, initialPlotId, onSuccess }: SaleFormPr
             control={control}
             name="payment_method"
             render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
+              <Select value={field.value ?? ''} onValueChange={field.onChange}>
                 <SelectTrigger id="payment_method" aria-invalid={Boolean(errors.payment_method)}>
                   <SelectValue placeholder="How was the down payment received?" />
                 </SelectTrigger>
@@ -229,11 +241,16 @@ export function SaleForm({ reservationId, initialPlotId, onSuccess }: SaleFormPr
             type="number"
             step="0.01"
             min="0"
+            disabled={isCashSale}
             aria-invalid={Boolean(errors.down_payment)}
             {...register('down_payment', { valueAsNumber: true })}
           />
           {errors.down_payment && <p className="text-sm text-destructive">{errors.down_payment.message}</p>}
-          <p className="text-xs text-muted-foreground">Cash sales must be paid in full at the time of sale.</p>
+          <p className="text-xs text-muted-foreground">
+            {isCashSale
+              ? 'Automatically set to the full sale price for cash sales.'
+              : 'Amount received today; any remaining balance is tracked in Installments.'}
+          </p>
         </div>
 
         <div className="flex flex-col gap-1.5">
