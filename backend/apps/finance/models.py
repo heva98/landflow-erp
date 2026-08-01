@@ -150,11 +150,11 @@ class JournalLine(BaseModel):
         ordering = ['journal_entry', 'created_at']
         constraints = [
             models.CheckConstraint(
-                check=~(Q(debit__gt=0) & Q(credit__gt=0)),
+                condition=~(Q(debit__gt=0) & Q(credit__gt=0)),
                 name='journal_line_not_both_debit_and_credit',
             ),
             models.CheckConstraint(
-                check=Q(debit__gt=0) | Q(credit__gt=0),
+                condition=Q(debit__gt=0) | Q(credit__gt=0),
                 name='journal_line_debit_or_credit_required',
             ),
         ]
