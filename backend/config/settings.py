@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.crm',
     'apps.reservations',
     'apps.sales',
+    'apps.installments',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
