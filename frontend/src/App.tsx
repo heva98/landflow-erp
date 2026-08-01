@@ -13,6 +13,9 @@ import { LeadDetailPage } from '@/features/crm/pages/lead-detail-page'
 import { LeadEditPage } from '@/features/crm/pages/lead-edit-page'
 import { LeadsPipelinePage } from '@/features/crm/pages/leads-pipeline-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
+import { AccountsPage } from '@/features/finance/pages/accounts-page'
+import { FinanceReportsPage } from '@/features/finance/pages/finance-reports-page'
+import { TransactionsPage } from '@/features/finance/pages/transactions-page'
 import { PaymentPlanCreatePage } from '@/features/installments/pages/payment-plan-create-page'
 import { PaymentPlanDetailPage } from '@/features/installments/pages/payment-plan-detail-page'
 import { PaymentPlansListPage } from '@/features/installments/pages/payment-plans-list-page'
@@ -56,6 +59,9 @@ function AppRoutes() {
         <Route path="/installments" element={<PaymentPlansListPage />} />
         <Route path="/installments/new" element={<PaymentPlanCreatePage />} />
         <Route path="/installments/:id" element={<PaymentPlanDetailPage />} />
+        <Route path="/finance/accounts" element={<AccountsPage />} />
+        <Route path="/finance/transactions" element={<TransactionsPage />} />
+        <Route path="/finance/reports" element={<FinanceReportsPage />} />
         <Route path="/crm/leads" element={<LeadsPipelinePage />} />
         <Route path="/crm/leads/new" element={<LeadCreatePage />} />
         <Route path="/crm/leads/:id" element={<LeadDetailPage />} />

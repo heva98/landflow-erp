@@ -1,11 +1,14 @@
 import {
+  ArrowLeftRight,
   Building2,
   CalendarClock,
   ClipboardList,
   Contact,
+  Landmark,
   LandPlot,
   LayoutDashboard,
   Map,
+  PieChart,
   Receipt,
   Users,
   Wallet,
@@ -30,6 +33,9 @@ const navItems: NavItem[] = [
   { label: 'Customers', icon: Users, path: '/crm/customers' },
   { label: 'Sales', icon: Receipt, path: '/sales' },
   { label: 'Installments', icon: Wallet, path: '/installments' },
+  { label: 'Accounts', icon: Landmark, path: '/finance/accounts' },
+  { label: 'Transactions', icon: ArrowLeftRight, path: '/finance/transactions' },
+  { label: 'Finance Reports', icon: PieChart, path: '/finance/reports' },
   { label: 'Reports', icon: ClipboardList },
 ]
 

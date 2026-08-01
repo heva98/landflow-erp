@@ -347,7 +347,7 @@ def test_create_budget_with_lines(api_client, finance_manager, expense_account):
     }, format='json')
     assert response.status_code == status.HTTP_201_CREATED, response.data
     assert len(response.data['lines']) == 1
-    assert response.data['lines'][0]['actual_amount'] == '0.00'
+    assert response.data['lines'][0]['actual_amount'] == Decimal('0')
 
 
 @pytest.mark.django_db
@@ -402,7 +402,7 @@ def test_cash_flow_report(api_client, finance_manager, income_account, cash_bank
     assert response.status_code == status.HTTP_200_OK, response.data
     assert Decimal(response.data['total_inflow']) == Decimal('75000.00')
     assert Decimal(response.data['net_cash_flow']) == Decimal('75000.00')
-    account_row = next(row for row in response.data['accounts'] if row['cash_bank_account'] == str(cash_bank_account.id))
+    account_row = next(row for row in response.data['accounts'] if row['cash_bank_account'] == cash_bank_account.id)
     assert Decimal(account_row['closing_balance']) == Decimal('75000.00')
 
 
