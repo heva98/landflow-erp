@@ -1,10 +1,11 @@
 import { ArrowLeft, FileText } from 'lucide-react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useAuth } from '@/features/auth/hooks/use-auth'
+import { canCreatePaymentPlans } from '@/features/installments/lib/permissions'
 import { formatTZS } from '@/lib/utils'
 
 import { SaleStatusBadge } from '../components/sale-status-badge'
@@ -17,6 +18,7 @@ export function SaleDetailPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const canManage = canManageSales(user?.permissions)
+  const canSetUpPaymentPlan = canCreatePaymentPlans(user?.permissions)
   const { data: sale, isLoading, isError } = useSaleQuery(id)
   const cancelSale = useCancelSaleMutation()
 
@@ -43,15 +45,22 @@ export function SaleDetailPage() {
           </div>
           <SaleStatusBadge status={sale.status} />
         </div>
-        {canManage && sale.status === 'active' && (
-          <Button
-            variant="destructive"
-            disabled={cancelSale.isPending}
-            onClick={() => cancelSale.mutate(sale.id)}
-          >
-            Cancel sale
-          </Button>
-        )}
+        <div className="flex gap-2">
+          {canSetUpPaymentPlan && sale.sale_type === 'installment' && sale.status === 'active' && Number(sale.balance_due) > 0 && (
+            <Button asChild variant="outline">
+              <Link to={`/installments/new?sale=${sale.id}`}>Set up payment plan</Link>
+            </Button>
+          )}
+          {canManage && sale.status === 'active' && (
+            <Button
+              variant="destructive"
+              disabled={cancelSale.isPending}
+              onClick={() => cancelSale.mutate(sale.id)}
+            >
+              Cancel sale
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">

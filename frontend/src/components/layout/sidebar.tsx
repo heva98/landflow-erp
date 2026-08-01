@@ -29,7 +29,7 @@ const navItems: NavItem[] = [
   { label: 'Leads', icon: Contact, path: '/crm/leads' },
   { label: 'Customers', icon: Users, path: '/crm/customers' },
   { label: 'Sales', icon: Receipt, path: '/sales' },
-  { label: 'Installments', icon: Wallet },
+  { label: 'Installments', icon: Wallet, path: '/installments' },
   { label: 'Reports', icon: ClipboardList },
 ]
 
