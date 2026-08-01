@@ -170,4 +170,8 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'apps.reservations.tasks.expire_overdue_reservations',
         'schedule': crontab(minute='*/15'),
     },
+    'flag-overdue-installments': {
+        'task': 'apps.installments.tasks.flag_overdue_installments',
+        'schedule': crontab(hour=1, minute=0),
+    },
 }

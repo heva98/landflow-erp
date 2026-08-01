@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/v1/', include('apps.crm.urls')),
     path('api/v1/', include('apps.reservations.urls')),
     path('api/v1/', include('apps.sales.urls')),
+    path('api/v1/', include('apps.installments.urls')),
 ]
 
 if settings.DEBUG:
