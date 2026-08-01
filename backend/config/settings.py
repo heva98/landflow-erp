@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'apps.reservations',
     'apps.sales',
     'apps.installments',
+    'apps.notifications',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
