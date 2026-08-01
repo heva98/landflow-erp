@@ -330,4 +330,4 @@ def test_payment_plan_id_reflects_existing_plan(api_client, agent, plot, custome
     api_client.force_authenticate(user=agent)
     response = api_client.get(reverse('sale-detail', args=[installment_sale.id]))
     assert response.status_code == status.HTTP_200_OK
-    assert response.data['payment_plan_id'] == str(plan.id)
+    assert response.data['payment_plan_id'] == plan.id
