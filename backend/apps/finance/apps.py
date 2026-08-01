@@ -9,6 +9,7 @@ class FinanceConfig(AppConfig):
     def ready(self):
         from apps.core.audit import register_for_audit
 
+        from . import signals
         from .models import (
             Account, Budget, BudgetLine, CashBankAccount, Expense, Income, JournalEntry, JournalLine,
         )
@@ -21,3 +22,5 @@ class FinanceConfig(AppConfig):
         register_for_audit(Expense)
         register_for_audit(Budget)
         register_for_audit(BudgetLine)
+
+        signals.connect()
