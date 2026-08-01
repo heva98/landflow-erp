@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -7,7 +8,7 @@ import { useAuth } from '@/features/auth/hooks/use-auth'
 import { formatTZS } from '@/lib/utils'
 
 import { ReservationStatusBadge } from '../components/reservation-status-badge'
-import { useCancelReservationMutation, useConvertReservationMutation, useReservationsQuery } from '../hooks/use-reservations'
+import { useCancelReservationMutation, useReservationsQuery } from '../hooks/use-reservations'
 import { canManageReservations } from '../lib/permissions'
 import { RESERVATION_STATUS_LABELS, RESERVATION_STATUSES, type ReservationStatus } from '../types'
 
@@ -19,7 +20,6 @@ export function ReservationsListPage() {
   const { data, isLoading, isError } = useReservationsQuery({
     status: status === 'all' ? undefined : status,
   })
-  const convertReservation = useConvertReservationMutation()
   const cancelReservation = useCancelReservationMutation()
   const columnCount = canManage ? 7 : 6
 
@@ -94,13 +94,8 @@ export function ReservationsListPage() {
                   <TableCell>
                     {reservation.status === 'active' && (
                       <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          disabled={convertReservation.isPending}
-                          onClick={() => convertReservation.mutate(reservation.id)}
-                        >
-                          Convert to sale
+                        <Button asChild size="sm" variant="outline">
+                          <Link to={`/sales/new?reservation=${reservation.id}`}>Convert to sale</Link>
                         </Button>
                         <Button
                           size="sm"

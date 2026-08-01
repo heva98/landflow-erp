@@ -28,7 +28,7 @@ const navItems: NavItem[] = [
   { label: 'Reservations', icon: CalendarClock, path: '/reservations' },
   { label: 'Leads', icon: Contact, path: '/crm/leads' },
   { label: 'Customers', icon: Users, path: '/crm/customers' },
-  { label: 'Sales', icon: Receipt },
+  { label: 'Sales', icon: Receipt, path: '/sales' },
   { label: 'Installments', icon: Wallet },
   { label: 'Reports', icon: ClipboardList },
 ]

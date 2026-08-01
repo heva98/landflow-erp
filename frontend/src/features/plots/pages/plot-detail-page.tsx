@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/features/auth/hooks/use-auth'
 import { ReservePlotDialog } from '@/features/reservations/components/reserve-plot-dialog'
 import { canCreateReservations } from '@/features/reservations/lib/permissions'
+import { canCreateSales } from '@/features/sales/lib/permissions'
 import { formatTZS } from '@/lib/utils'
 
 import { PlotStatusBadge } from '../components/plot-status-badge'
@@ -18,6 +19,7 @@ export function PlotDetailPage() {
   const { user } = useAuth()
   const canEdit = canEditPlots(user?.permissions)
   const canReserve = canCreateReservations(user?.permissions)
+  const canSell = canCreateSales(user?.permissions)
   const { data: plot, isLoading, isError } = usePlotQuery(id)
 
   if (isLoading) {
@@ -47,6 +49,11 @@ export function PlotDetailPage() {
         <div className="flex items-center gap-2">
           {canReserve && plot.status === 'available' && (
             <ReservePlotDialog plotId={plot.id} plotNumber={plot.plot_number} />
+          )}
+          {canSell && plot.status === 'available' && (
+            <Button asChild variant="outline">
+              <Link to={`/sales/new?plot=${plot.id}`}>Sell</Link>
+            </Button>
           )}
           {canEdit && (
             <Button asChild variant="outline">
@@ -107,6 +114,10 @@ export function PlotDetailPage() {
             ) : (
               <p className="font-medium text-foreground">—</p>
             )}
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Owner</p>
+            <p className="font-medium text-foreground">{plot.owner_name ?? '—'}</p>
           </div>
         </CardContent>
       </Card>

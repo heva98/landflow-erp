@@ -17,11 +17,6 @@ export async function createReservation(input: ReservationInput): Promise<Reserv
   return response.data
 }
 
-export async function convertReservation(id: string): Promise<Reservation> {
-  const response = await apiClient.post<Reservation>(`/reservations/${id}/convert/`)
-  return response.data
-}
-
 export async function cancelReservation(id: string): Promise<Reservation> {
   const response = await apiClient.post<Reservation>(`/reservations/${id}/cancel/`)
   return response.data

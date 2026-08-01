@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { cancelReservation, convertReservation, createReservation, fetchReservation, fetchReservations } from '../api/reservations-api'
+import { cancelReservation, createReservation, fetchReservation, fetchReservations } from '../api/reservations-api'
 import type { ReservationListParams } from '../types'
 
 export function useReservationsQuery(params: ReservationListParams = {}) {
@@ -22,17 +22,6 @@ export function useCreateReservationMutation() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: createReservation,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reservations'] })
-      queryClient.invalidateQueries({ queryKey: ['plots'] })
-    },
-  })
-}
-
-export function useConvertReservationMutation() {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: (id: string) => convertReservation(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservations'] })
       queryClient.invalidateQueries({ queryKey: ['plots'] })
