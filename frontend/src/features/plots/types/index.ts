@@ -31,7 +31,8 @@ export interface Plot {
   nearby_hospitals: string[]
   image_urls: string[]
   images_360_urls: string[]
-  current_owner: string
+  owner: string | null
+  owner_name: string | null
   created_at: string
   updated_at: string
 }
@@ -62,5 +63,4 @@ export interface PlotInput {
   price: number
   discount: number
   google_maps_url: string
-  current_owner: string
 }

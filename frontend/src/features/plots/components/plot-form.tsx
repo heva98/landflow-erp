@@ -25,7 +25,6 @@ const plotFormSchema = z.object({
   price: z.number().nonnegative('Must be zero or more'),
   discount: z.number().nonnegative('Must be zero or more'),
   google_maps_url: z.union([z.string().url('Enter a valid URL'), z.literal('')]).optional(),
-  current_owner: z.string().max(255).optional(),
 })
 
 export type PlotFormValues = z.infer<typeof plotFormSchema>
@@ -70,7 +69,6 @@ export function PlotForm({ defaultValues, submitLabel, onSubmit }: PlotFormProps
         price: values.price,
         discount: values.discount,
         google_maps_url: values.google_maps_url ?? '',
-        current_owner: values.current_owner ?? '',
       })
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 403) {

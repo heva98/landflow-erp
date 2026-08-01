@@ -28,7 +28,6 @@ export function PlotEditPage() {
           price: Number(plot.price),
           discount: Number(plot.discount),
           google_maps_url: plot.google_maps_url,
-          current_owner: plot.current_owner,
         }}
         onSubmit={async (input) => {
           await updatePlot.mutateAsync(input)

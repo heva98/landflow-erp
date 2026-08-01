@@ -1,6 +1,7 @@
 from django.db import models
 
 from apps.core.models import BaseModel
+from apps.crm.models import Customer
 from apps.projects.models import Project
 
 
@@ -41,9 +42,10 @@ class Plot(BaseModel):
     image_urls = models.JSONField(default=list, blank=True)
     images_360_urls = models.JSONField(default=list, blank=True)
 
-    # Ownership — Customer module (spec Module 5) hasn't landed yet, so this
-    # is a plain name for now and will become an FK once Customers exist.
-    current_owner = models.CharField(max_length=255, blank=True)
+    # Ownership — set by the Sales module (spec Module 8) when a sale is made.
+    owner = models.ForeignKey(
+        Customer, null=True, blank=True, on_delete=models.SET_NULL, related_name='owned_plots',
+    )
 
     class Meta:
         ordering = ['-created_at']
