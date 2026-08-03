@@ -191,6 +191,25 @@ def test_receipt_creation_auto_posts_income(sale):
 
 
 @pytest.mark.django_db
+def test_auto_pull_does_not_collide_with_user_accounts_using_the_same_codes(sale):
+    # '1000'/'4000' are exactly the codes a real chart of accounts would pick
+    # for its own Cash/Income accounts, so the default-account bootstrapping
+    # must not match on code alone — see services._get_or_create_account.
+    unrelated_asset = Account.objects.create(code='1000', name='Petty Cash Drawer', type=Account.Type.ASSET)
+    unrelated_income = Account.objects.create(code='4000', name='Consulting Income', type=Account.Type.INCOME)
+
+    receipt = Receipt.objects.create(
+        sale=sale, amount=Decimal('2000000.00'), payment_method=Receipt.PaymentMethod.CASH,
+    )
+
+    income = Income.objects.get(object_id=str(receipt.pk))
+    assert income.deposit_to.account_id != unrelated_asset.id
+    assert income.account_id != unrelated_income.id
+    assert income.deposit_to.name == 'Undeposited Funds'
+    assert income.account.name == 'Sales & Installment Income'
+
+
+@pytest.mark.django_db
 def test_installment_payment_creation_auto_posts_income(payment_plan):
     first = payment_plan.installments.get(sequence=1)
     payment = InstallmentPayment.objects.create(installment=first, amount=Decimal('2500000.00'), method='cash')

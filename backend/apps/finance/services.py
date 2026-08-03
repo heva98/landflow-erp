@@ -15,7 +15,12 @@ from .models import Account, CashBankAccount, Income, JournalEntry, JournalLine
 # Auto-created the first time an auto-pulled Income entry needs them. Money
 # lands here as "received but not yet deposited/reconciled to a real bank
 # account" — see docs/spec.md Module 10 "Bank Reconciliation" (not built yet).
+# Looked up by name, not a fixed code — '1000'/'4000' are exactly the codes a
+# real chart of accounts would already use for its own Cash/Income accounts,
+# so matching on code risked silently adopting an unrelated user account.
+DEFAULT_INCOME_ACCOUNT_NAME = 'Sales & Installment Income'
 DEFAULT_INCOME_ACCOUNT_CODE = '4000'
+DEFAULT_UNDEPOSITED_FUNDS_NAME = 'Undeposited Funds'
 DEFAULT_UNDEPOSITED_FUNDS_CODE = '1000'
 
 
@@ -36,23 +41,35 @@ def post_journal_entry(
     return entry
 
 
+def _get_or_create_account(*, name, type, preferred_code):
+    account = Account.objects.filter(name=name, type=type).first()
+    if account:
+        return account
+
+    code = preferred_code
+    suffix = 1
+    while Account.objects.filter(code=code).exists():
+        code = f'{preferred_code}-{suffix}'
+        suffix += 1
+    return Account.objects.create(code=code, name=name, type=type)
+
+
 def _default_income_account():
-    account, _ = Account.objects.get_or_create(
-        code=DEFAULT_INCOME_ACCOUNT_CODE,
-        defaults={'name': 'Sales & Installment Income', 'type': Account.Type.INCOME},
+    return _get_or_create_account(
+        name=DEFAULT_INCOME_ACCOUNT_NAME, type=Account.Type.INCOME, preferred_code=DEFAULT_INCOME_ACCOUNT_CODE,
     )
-    return account
 
 
 def _default_deposit_account():
-    cash_bank_account = CashBankAccount.objects.filter(name='Undeposited Funds').first()
+    cash_bank_account = CashBankAccount.objects.filter(name=DEFAULT_UNDEPOSITED_FUNDS_NAME).first()
     if cash_bank_account:
         return cash_bank_account
-    account, _ = Account.objects.get_or_create(
-        code=DEFAULT_UNDEPOSITED_FUNDS_CODE,
-        defaults={'name': 'Undeposited Funds', 'type': Account.Type.ASSET},
+    account = _get_or_create_account(
+        name=DEFAULT_UNDEPOSITED_FUNDS_NAME, type=Account.Type.ASSET, preferred_code=DEFAULT_UNDEPOSITED_FUNDS_CODE,
     )
-    return CashBankAccount.objects.create(name='Undeposited Funds', kind=CashBankAccount.Kind.CASH, account=account)
+    return CashBankAccount.objects.create(
+        name=DEFAULT_UNDEPOSITED_FUNDS_NAME, kind=CashBankAccount.Kind.CASH, account=account,
+    )
 
 
 def record_income(*, source, source_object, amount, date, description, recorded_by=None):
