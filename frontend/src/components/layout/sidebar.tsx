@@ -4,6 +4,7 @@ import {
   CalendarClock,
   ClipboardList,
   Contact,
+  Handshake,
   Landmark,
   LandPlot,
   LayoutDashboard,
@@ -25,6 +26,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+  { label: 'Land Acquisition', icon: Handshake, path: '/acquisitions' },
   { label: 'Projects', icon: Building2, path: '/projects' },
   { label: 'Plots', icon: LandPlot, path: '/plots' },
   { label: 'Survey', icon: Map },

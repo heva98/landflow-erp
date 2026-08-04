@@ -3,6 +3,10 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { AppProviders } from '@/app/providers'
 import { AppShell } from '@/components/layout/app-shell'
 import { ProtectedRoute } from '@/components/layout/protected-route'
+import { AcquisitionCreatePage } from '@/features/acquisitions/pages/acquisition-create-page'
+import { AcquisitionDetailPage } from '@/features/acquisitions/pages/acquisition-detail-page'
+import { AcquisitionEditPage } from '@/features/acquisitions/pages/acquisition-edit-page'
+import { AcquisitionsListPage } from '@/features/acquisitions/pages/acquisitions-list-page'
 import { LoginPage } from '@/features/auth/pages/login-page'
 import { CustomerCreatePage } from '@/features/crm/pages/customer-create-page'
 import { CustomerDetailPage } from '@/features/crm/pages/customer-detail-page'
@@ -45,6 +49,10 @@ function AppRoutes() {
         }
       >
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/acquisitions" element={<AcquisitionsListPage />} />
+        <Route path="/acquisitions/new" element={<AcquisitionCreatePage />} />
+        <Route path="/acquisitions/:id" element={<AcquisitionDetailPage />} />
+        <Route path="/acquisitions/:id/edit" element={<AcquisitionEditPage />} />
         <Route path="/projects" element={<ProjectsListPage />} />
         <Route path="/projects/new" element={<ProjectCreatePage />} />
         <Route path="/projects/:id" element={<ProjectDetailPage />} />
