@@ -251,6 +251,58 @@ def test_role_with_edit_access_but_no_financials_permission_cannot_set_price(api
 
 
 @pytest.mark.django_db
+def test_plot_area_cannot_exceed_project_total_area(api_client, admin_user, project):
+    # project.total_area_sqm is 50000.00
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.post(reverse('plot-list'), {
+        'project': str(project.id),
+        'plot_number': 'B-01',
+        'area_sqm': '60000.00',
+    })
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert 'area_sqm' in response.data
+    assert not Plot.objects.filter(plot_number='B-01').exists()
+
+
+@pytest.mark.django_db
+def test_sum_of_plot_areas_cannot_exceed_project_total_area(api_client, admin_user, plot):
+    # plot already occupies 500.00 of the project's 50000.00 sqm.
+    Plot.objects.create(project=plot.project, plot_number='A-02', area_sqm=Decimal('49600.00'))
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.post(reverse('plot-list'), {
+        'project': str(plot.project_id),
+        'plot_number': 'A-03',
+        'area_sqm': '100.00',
+    })
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert 'area_sqm' in response.data
+    assert not Plot.objects.filter(plot_number='A-03').exists()
+
+
+@pytest.mark.django_db
+def test_plot_areas_can_exactly_fill_project_total_area(api_client, admin_user, plot):
+    # plot already occupies 500.00 of the project's 50000.00 sqm.
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.post(reverse('plot-list'), {
+        'project': str(plot.project_id),
+        'plot_number': 'A-02',
+        'area_sqm': '49500.00',
+    })
+    assert response.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+def test_updating_a_plot_excludes_its_own_area_from_the_sum(api_client, admin_user, plot):
+    # plot already occupies all 500.00 sqm it's being resized to here; without
+    # excluding itself from the sum this would incorrectly double-count it.
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.patch(reverse('plot-detail', args=[plot.id]), {'area_sqm': '600.00'})
+    assert response.status_code == status.HTTP_200_OK
+    plot.refresh_from_db()
+    assert plot.area_sqm == Decimal('600.00')
+
+
+@pytest.mark.django_db
 def test_sales_manager_can_edit_plot_and_set_financials(api_client, project):
     sales_manager_role = Role.objects.get(name='Sales Manager')
     sales_manager = User.objects.create_user(

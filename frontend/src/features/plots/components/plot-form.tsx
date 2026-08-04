@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { isAxiosError } from 'axios'
-import { Loader2 } from 'lucide-react'
+import { Loader2, TriangleAlert } from 'lucide-react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -29,6 +29,17 @@ const plotFormSchema = z.object({
 
 export type PlotFormValues = z.infer<typeof plotFormSchema>
 
+const FORM_FIELD_NAMES = [
+  'project', 'plot_number', 'block', 'street', 'status',
+  'area_sqm', 'price', 'discount', 'google_maps_url',
+] as const
+
+function extractFieldMessage(value: unknown): string | null {
+  if (Array.isArray(value)) return value.map(String).join(' ')
+  if (typeof value === 'string') return value
+  return null
+}
+
 interface PlotFormProps {
   defaultValues?: Partial<PlotFormValues>
   submitLabel: string
@@ -45,6 +56,7 @@ export function PlotForm({ defaultValues, submitLabel, onSubmit }: PlotFormProps
     register,
     control,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<PlotFormValues>({
     resolver: zodResolver(plotFormSchema),
@@ -73,6 +85,21 @@ export function PlotForm({ defaultValues, submitLabel, onSubmit }: PlotFormProps
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 403) {
         setFormError("You don't have permission to do that.")
+      } else if (isAxiosError(error) && error.response?.status === 400) {
+        const data = (error.response.data ?? {}) as Record<string, unknown>
+        const leftoverMessages: string[] = []
+        for (const [key, value] of Object.entries(data)) {
+          const message = extractFieldMessage(value)
+          if (!message) continue
+          if ((FORM_FIELD_NAMES as readonly string[]).includes(key)) {
+            setError(key as keyof PlotFormValues, { type: 'server', message })
+          } else {
+            leftoverMessages.push(message)
+          }
+        }
+        if (leftoverMessages.length > 0) {
+          setFormError(leftoverMessages.join(' '))
+        }
       } else {
         setFormError('Something went wrong. Please try again.')
       }
@@ -153,7 +180,12 @@ export function PlotForm({ defaultValues, submitLabel, onSubmit }: PlotFormProps
             aria-invalid={Boolean(errors.area_sqm)}
             {...register('area_sqm', { valueAsNumber: true })}
           />
-          {errors.area_sqm && <p className="text-sm text-destructive">{errors.area_sqm.message}</p>}
+          {errors.area_sqm && (
+            <p className="flex items-center gap-1 text-sm text-warning">
+              <TriangleAlert className="size-3.5 shrink-0" />
+              {errors.area_sqm.message}
+            </p>
+          )}
         </div>
 
         {canSetFinancials && (
@@ -200,7 +232,12 @@ export function PlotForm({ defaultValues, submitLabel, onSubmit }: PlotFormProps
 
       </div>
 
-      {formError && <p className="text-sm text-destructive">{formError}</p>}
+      {formError && (
+        <div className="flex items-start gap-2 rounded-lg bg-warning/15 px-3 py-2 text-sm text-warning">
+          <TriangleAlert className="mt-0.5 size-4 shrink-0" />
+          <p>{formError}</p>
+        </div>
+      )}
 
       <div>
         <Button type="submit" disabled={isSubmitting}>

@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+from django.db.models import Sum
 from rest_framework import serializers
 
 from .models import Plot
@@ -30,3 +33,31 @@ class PlotSerializer(serializers.ModelSerializer):
         if not (user and user.is_authenticated and user.has_perm('plots.set_plot_financials')):
             for field_name in FINANCIAL_WRITE_FIELDS:
                 self.fields[field_name].read_only = True
+
+    def validate(self, attrs):
+        project = attrs.get('project') or (self.instance.project if self.instance else None)
+        area_sqm = attrs.get('area_sqm')
+        if area_sqm is None and self.instance:
+            area_sqm = self.instance.area_sqm
+
+        if project is not None and area_sqm is not None:
+            if area_sqm > project.total_area_sqm:
+                raise serializers.ValidationError({
+                    'area_sqm': "Plot area cannot exceed the project's total area.",
+                })
+
+            other_plots = project.plots.all()
+            if self.instance:
+                other_plots = other_plots.exclude(pk=self.instance.pk)
+            other_plots_area = other_plots.aggregate(total=Sum('area_sqm'))['total'] or Decimal('0')
+
+            if other_plots_area + area_sqm > project.total_area_sqm:
+                remaining = project.total_area_sqm - other_plots_area
+                raise serializers.ValidationError({
+                    'area_sqm': (
+                        f'Total plot area for {project.name} would exceed its total area '
+                        f'({project.total_area_sqm} sqm). Only {remaining} sqm remaining.'
+                    ),
+                })
+
+        return attrs
