@@ -36,6 +36,27 @@ def customer_role(db):
 
 
 @pytest.fixture
+def administrator_role(db):
+    return Role.objects.get(name='Administrator')
+
+
+@pytest.fixture
+def site_manager_role(db):
+    # Granted view-only access to plots/sales/installments but not crm or finance.
+    return Role.objects.get(name='Site Manager')
+
+
+@pytest.fixture
+def administrator(db, administrator_role):
+    return User.objects.create_user(email='admin@landflow.co.tz', password='s3cure-pass', role=administrator_role)
+
+
+@pytest.fixture
+def site_manager(db, site_manager_role):
+    return User.objects.create_user(email='sitemgr@landflow.co.tz', password='s3cure-pass', role=site_manager_role)
+
+
+@pytest.fixture
 def sales_manager(db, sales_manager_role):
     return User.objects.create_user(email='salesmgr@landflow.co.tz', password='s3cure-pass', role=sales_manager_role)
 
@@ -280,3 +301,63 @@ def test_cash_flow_report_requires_permission(api_client, customer_user):
         'date_from': today.isoformat(), 'date_to': today.isoformat(),
     })
     assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+# --- dashboard ------------------------------------------------------------------
+
+@pytest.mark.django_db
+def test_dashboard_requires_authentication(api_client):
+    response = api_client.get(reverse('report-dashboard'))
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+def test_dashboard_full_access(api_client, administrator, sale, payment_plan, lead):
+    api_client.force_authenticate(user=administrator)
+    response = api_client.get(reverse('report-dashboard'))
+    assert response.status_code == status.HTTP_200_OK, response.data
+    data = response.data
+
+    # sale.plot is paid off in full at creation (cash sale); payment_plan's
+    # plot has an active, unpaid plan, so only the cash sale is transfer-ready.
+    assert data['plots'] == {'available': 0, 'reserved': 0, 'sold': 2}
+    assert data['pending_transfers'] == 1
+    assert Decimal(data['outstanding_balances']) == payment_plan.total_payable
+    assert data['leads']['new_today'] == 1
+
+    # No Receipt/InstallmentPayment was recorded through the API in these
+    # fixtures, so no Income was auto-posted and revenue is zero.
+    assert Decimal(data['revenue']['today']) == Decimal('0')
+
+    # Only the first installment (due at start_date, exactly the 30-day
+    # window edge) falls inside the upcoming-payments window.
+    assert data['upcoming_payments']['count'] == 1
+    assert data['upcoming_payments']['rows'][0]['sale_number'] == payment_plan.sale.sale_number
+
+    this_month = data['monthly_sales'][-1]
+    assert this_month['count'] == 2
+    assert Decimal(this_month['total']) == sale.net_price + payment_plan.sale.net_price
+
+    # Neither fixture sale has `sold_by` set.
+    assert data['top_agents'] == []
+
+    assert data['recent_activity'] is not None and len(data['recent_activity']) > 0
+
+
+@pytest.mark.django_db
+def test_dashboard_hides_sections_without_permission(api_client, site_manager, sale, payment_plan, lead):
+    api_client.force_authenticate(user=site_manager)
+    response = api_client.get(reverse('report-dashboard'))
+    assert response.status_code == status.HTTP_200_OK, response.data
+    data = response.data
+
+    # Site Manager has view access to plots/sales/installments but not crm or finance.
+    assert data['revenue'] is None
+    assert data['leads'] is None
+    assert data['recent_activity'] is None
+    assert data['plots'] is not None
+    assert data['pending_transfers'] is not None
+    assert data['outstanding_balances'] is not None
+    assert data['upcoming_payments'] is not None
+    assert data['monthly_sales'] is not None
+    assert data['top_agents'] is not None

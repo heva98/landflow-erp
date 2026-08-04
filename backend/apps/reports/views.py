@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from . import export, reports
+from . import dashboard, export, reports
 from .permissions import (
     HasFinanceReportAccess, HasInstallmentReportAccess, HasLandInventoryReportAccess, HasLeadReportAccess,
     HasSalesReportAccess,
@@ -140,3 +140,11 @@ class ReportViewSet(viewsets.ViewSet):
                 export.summary_lines(data['summary'], reports.CASH_FLOW_SUMMARY_LABELS),
             )
         return Response(data)
+
+    @action(detail=False)
+    def dashboard(self, request):
+        """One combined payload for the Dashboard page. Every section is
+        gated on the same permission its own report/list endpoint requires;
+        a section the user can't view comes back `null` rather than missing,
+        so widgets can be hidden without a special-cased frontend contract."""
+        return Response(dashboard.dashboard_summary(request.user))
