@@ -27,6 +27,7 @@ import { ProjectCreatePage } from '@/features/projects/pages/project-create-page
 import { ProjectDetailPage } from '@/features/projects/pages/project-detail-page'
 import { ProjectEditPage } from '@/features/projects/pages/project-edit-page'
 import { ProjectsListPage } from '@/features/projects/pages/projects-list-page'
+import { ReportsPage } from '@/features/reports/pages/reports-page'
 import { ReservationsListPage } from '@/features/reservations/pages/reservations-list-page'
 import { SaleCreatePage } from '@/features/sales/pages/sale-create-page'
 import { SaleDetailPage } from '@/features/sales/pages/sale-detail-page'
@@ -62,6 +63,7 @@ function AppRoutes() {
         <Route path="/finance/accounts" element={<AccountsPage />} />
         <Route path="/finance/transactions" element={<TransactionsPage />} />
         <Route path="/finance/reports" element={<FinanceReportsPage />} />
+        <Route path="/reports" element={<ReportsPage />} />
         <Route path="/crm/leads" element={<LeadsPipelinePage />} />
         <Route path="/crm/leads/new" element={<LeadCreatePage />} />
         <Route path="/crm/leads/:id" element={<LeadDetailPage />} />

@@ -36,7 +36,7 @@ const navItems: NavItem[] = [
   { label: 'Accounts', icon: Landmark, path: '/finance/accounts' },
   { label: 'Transactions', icon: ArrowLeftRight, path: '/finance/transactions' },
   { label: 'Finance Reports', icon: PieChart, path: '/finance/reports' },
-  { label: 'Reports', icon: ClipboardList },
+  { label: 'Reports', icon: ClipboardList, path: '/reports' },
 ]
 
 export function Sidebar() {

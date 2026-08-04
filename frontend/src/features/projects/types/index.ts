@@ -38,6 +38,7 @@ export interface ProjectListParams {
   status?: ProjectStatus
   search?: string
   page?: number
+  page_size?: number
 }
 
 export interface PaginatedResponse<T> {
