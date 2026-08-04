@@ -1,3 +1,5 @@
+from decimal import Decimal, InvalidOperation
+
 from django.db import transaction
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
@@ -60,8 +62,11 @@ class LandAcquisitionViewSet(viewsets.ModelViewSet):
                 {'detail': 'Only an approved acquisition can be marked purchased.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        purchase_price = request.data.get('purchase_price', acquisition.purchase_price)
-        if not purchase_price or float(purchase_price) <= 0:
+        try:
+            purchase_price = Decimal(str(request.data.get('purchase_price', acquisition.purchase_price)))
+        except InvalidOperation:
+            return Response({'purchase_price': 'Enter a valid amount.'}, status=status.HTTP_400_BAD_REQUEST)
+        if purchase_price <= 0:
             return Response(
                 {'purchase_price': 'A purchase price greater than zero is required.'},
                 status=status.HTTP_400_BAD_REQUEST,

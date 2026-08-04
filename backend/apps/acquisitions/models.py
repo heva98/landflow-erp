@@ -107,7 +107,7 @@ class LandOwner(BaseModel):
 
 class Negotiation(BaseModel):
     acquisition = models.ForeignKey(LandAcquisition, on_delete=models.CASCADE, related_name='negotiations')
-    negotiated_on = models.DateField(default=timezone.now)
+    negotiated_on = models.DateField(default=timezone.localdate)
     offered_price = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
     counter_offer_price = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
     notes = models.TextField(blank=True)
@@ -136,7 +136,7 @@ class PurchaseCost(BaseModel):
     cost_type = models.CharField(max_length=30, choices=CostType.choices)
     description = models.CharField(max_length=255, blank=True)
     amount = models.DecimalField(max_digits=14, decimal_places=2)
-    incurred_on = models.DateField(default=timezone.now)
+    incurred_on = models.DateField(default=timezone.localdate)
 
     class Meta:
         ordering = ['-incurred_on']
