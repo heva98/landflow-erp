@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useCustomersQuery } from '@/features/crm/hooks/use-customers'
-import { usePlotsQuery } from '@/features/plots/hooks/use-plots'
+import { usePlotQuery, usePlotsQuery } from '@/features/plots/hooks/use-plots'
 import { useReservationQuery } from '@/features/reservations/hooks/use-reservations'
 import { formatTZS } from '@/lib/utils'
 
@@ -60,9 +60,22 @@ export function SaleForm({ reservationId, initialPlotId, onSuccess }: SaleFormPr
   })
 
   const saleType = useWatch({ control, name: 'sale_type' })
+  const plotFieldValue = useWatch({ control, name: 'plot' })
   const salePrice = useWatch({ control, name: 'sale_price' })
   const discount = useWatch({ control, name: 'discount' })
   const isCashSale = saleType === 'cash'
+
+  const selectedPlotId = reservationId ? reservation?.plot : plotFieldValue
+  const { data: selectedPlot } = usePlotQuery(selectedPlotId)
+
+  // Cash sales are paid in full, so default the sale price to the plot's
+  // selling price the moment Cash Sale is chosen — down payment then follows
+  // it via the effect below. Still editable for a negotiated price.
+  useEffect(() => {
+    if (isCashSale && selectedPlot) {
+      setValue('sale_price', Number(selectedPlot.final_price), { shouldValidate: true })
+    }
+  }, [isCashSale, selectedPlot?.id, selectedPlot?.final_price, setValue])
 
   useEffect(() => {
     if (isCashSale) {
