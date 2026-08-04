@@ -138,7 +138,7 @@ def _upcoming_payments(user):
             'plot_number': installment.payment_plan.sale.plot.plot_number,
             'due_date': installment.due_date,
             'balance': installment.balance,
-            'status': installment.get_status_display(),
+            'status': installment.status,
         }
         for installment in queryset[:UPCOMING_PAYMENT_ROW_LIMIT]
     ]
