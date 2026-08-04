@@ -53,12 +53,13 @@ docker-compose.yml   postgres + redis for local dev
 ## Design tokens
 | Token | Value |
 |---|---|
-| Primary (dark green) | `#0E5B45` |
-| Secondary (gold) | `#C89B3C` |
-| Accent (light green) | `#4CAF50` |
-| Sidebar | `#114232` |
-| Background | `#F8FAFC` |
+| Primary (orange) | `#FF8427` (hover `#E56F13`) |
+| Secondary (navy) | `#17255A` |
+| Surface / Surface alt | `#E8E9F3` / `#EDF2FA` |
+| Sidebar | `#17255A` |
+| Background | `#E8E9F3` |
 | Cards | `#FFFFFF` |
+| Text / Text inverse | `#17255A` / `#FFFFFF` |
 | Danger / Warning / Info | `#D32F2F` / `#F59E0B` / `#2563EB` |
 Card radius 16px, rounded buttons, lucide-react icons, smooth/minimal motion.
 

@@ -15,8 +15,8 @@ export function KpiGrid({ data }: { data: DashboardSummary }) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {data.revenue && (
         <>
-          <StatCard icon={Wallet} label="Revenue Today" value={formatTZS(data.revenue.today)} tone="positive" />
-          <StatCard icon={TrendingUp} label="Revenue This Month" value={formatTZS(data.revenue.this_month)} tone="positive" />
+          <StatCard icon={Wallet} label="Revenue Today" value={formatTZS(data.revenue.today)} />
+          <StatCard icon={TrendingUp} label="Revenue This Month" value={formatTZS(data.revenue.this_month)} />
         </>
       )}
 

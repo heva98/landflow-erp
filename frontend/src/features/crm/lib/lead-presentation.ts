@@ -17,7 +17,7 @@ export function ageLabel(days: number): string {
 
 // A handful of brand-consistent colors to hash an assignee's name against,
 // so the same person always gets the same avatar color across the board.
-const AVATAR_COLORS = ['#0E5B45', '#2563EB', '#C89B3C', '#4CAF50', '#6D28D9', '#B8860B']
+const AVATAR_COLORS = ['#17255A', '#2563EB', '#FF8427', '#4CAF50', '#6D28D9', '#B8860B']
 
 export function avatarColor(name: string | null | undefined): string {
   if (!name) return '#CBD5E1'
