@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'apps.notifications',
     'apps.finance',
     'apps.reports',
+    'apps.documents',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -123,9 +124,32 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Local dev only — production uses S3-compatible object storage (not yet wired up).
+# Media / file storage
+# Defaults to local disk for dev. Set AWS_STORAGE_BUCKET_NAME (plus the other
+# AWS_* vars below) to switch every FileField in the project — Document
+# Management included — to S3-compatible object storage, no code changes.
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
+
+if AWS_STORAGE_BUCKET_NAME:
+    AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
+    AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+    AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL', default=None)
+    AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default=None)
+    AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default=None)
+    AWS_DEFAULT_ACL = None
+    AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=True)
+    STORAGES = {
+        'default': {'BACKEND': 'storages.backends.s3.S3Storage'},
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    }
+else:
+    STORAGES = {
+        'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
