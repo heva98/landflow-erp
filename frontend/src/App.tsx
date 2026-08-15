@@ -17,6 +17,8 @@ import { LeadDetailPage } from '@/features/crm/pages/lead-detail-page'
 import { LeadEditPage } from '@/features/crm/pages/lead-edit-page'
 import { LeadsPipelinePage } from '@/features/crm/pages/leads-pipeline-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
+import { DocumentDetailPage } from '@/features/documents/pages/document-detail-page'
+import { DocumentsListPage } from '@/features/documents/pages/documents-list-page'
 import { AccountsPage } from '@/features/finance/pages/accounts-page'
 import { FinanceReportsPage } from '@/features/finance/pages/finance-reports-page'
 import { TransactionsPage } from '@/features/finance/pages/transactions-page'
@@ -72,6 +74,8 @@ function AppRoutes() {
         <Route path="/finance/transactions" element={<TransactionsPage />} />
         <Route path="/finance/reports" element={<FinanceReportsPage />} />
         <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/documents" element={<DocumentsListPage />} />
+        <Route path="/documents/:id" element={<DocumentDetailPage />} />
         <Route path="/crm/leads" element={<LeadsPipelinePage />} />
         <Route path="/crm/leads/new" element={<LeadCreatePage />} />
         <Route path="/crm/leads/:id" element={<LeadDetailPage />} />

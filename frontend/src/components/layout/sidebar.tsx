@@ -4,6 +4,7 @@ import {
   CalendarClock,
   ClipboardList,
   Contact,
+  FileText,
   Handshake,
   Landmark,
   LandPlot,
@@ -39,6 +40,7 @@ const navItems: NavItem[] = [
   { label: 'Transactions', icon: ArrowLeftRight, path: '/finance/transactions' },
   { label: 'Finance Reports', icon: PieChart, path: '/finance/reports' },
   { label: 'Reports', icon: ClipboardList, path: '/reports' },
+  { label: 'Documents', icon: FileText, path: '/documents' },
 ]
 
 export function Sidebar() {
