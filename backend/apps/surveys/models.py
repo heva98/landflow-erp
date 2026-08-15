@@ -164,6 +164,14 @@ class Subdivision(BaseModel):
     def __str__(self):
         return f'Subdivision for {self.survey.reference_number}'
 
+    def save(self, *args, **kwargs):
+        if self.gross_area_sqm is not None and self.net_saleable_area_sqm is None:
+            self.net_saleable_area_sqm = (
+                self.gross_area_sqm - self.road_reserve_area_sqm
+                - self.utility_reserve_area_sqm - self.open_space_area_sqm
+            )
+        super().save(*args, **kwargs)
+
 
 class SubdivisionPlot(BaseModel):
     class LandUse(models.TextChoices):
