@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'apps.reports',
     'apps.documents',
     'apps.legal',
+    'apps.site_visits',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
