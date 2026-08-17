@@ -22,6 +22,12 @@ import { DocumentsListPage } from '@/features/documents/pages/documents-list-pag
 import { GisPage } from '@/features/gis/pages/gis-page'
 import { OwnershipTransferDetailPage } from '@/features/legal/pages/ownership-transfer-detail-page'
 import { LegalPage } from '@/features/legal/pages/legal-page'
+import { BookingDetailPage } from '@/features/site-visits/pages/booking-detail-page'
+import { CheckInPage } from '@/features/site-visits/pages/check-in-page'
+import { SiteVisitCreatePage } from '@/features/site-visits/pages/site-visit-create-page'
+import { SiteVisitDetailPage } from '@/features/site-visits/pages/site-visit-detail-page'
+import { SiteVisitsDirectoryPage } from '@/features/site-visits/pages/site-visits-directory-page'
+import { SiteVisitsListPage } from '@/features/site-visits/pages/site-visits-list-page'
 import { SubdivisionDetailPage } from '@/features/surveys/pages/subdivision-detail-page'
 import { SurveyCreatePage } from '@/features/surveys/pages/survey-create-page'
 import { SurveyDetailPage } from '@/features/surveys/pages/survey-detail-page'
@@ -92,6 +98,12 @@ function AppRoutes() {
         <Route path="/surveys/:id" element={<SurveyDetailPage />} />
         <Route path="/surveys/:id/subdivision" element={<SubdivisionDetailPage />} />
         <Route path="/gis" element={<GisPage />} />
+        <Route path="/site-visits" element={<SiteVisitsListPage />} />
+        <Route path="/site-visits/new" element={<SiteVisitCreatePage />} />
+        <Route path="/site-visits/directory" element={<SiteVisitsDirectoryPage />} />
+        <Route path="/site-visits/check-in" element={<CheckInPage />} />
+        <Route path="/site-visits/bookings/:id" element={<BookingDetailPage />} />
+        <Route path="/site-visits/:id" element={<SiteVisitDetailPage />} />
         <Route path="/crm/leads" element={<LeadsPipelinePage />} />
         <Route path="/crm/leads/new" element={<LeadCreatePage />} />
         <Route path="/crm/leads/:id" element={<LeadDetailPage />} />

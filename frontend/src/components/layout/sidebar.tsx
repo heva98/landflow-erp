@@ -1,6 +1,7 @@
 import {
   ArrowLeftRight,
   Building2,
+  Bus,
   CalendarClock,
   ClipboardList,
   Contact,
@@ -34,6 +35,7 @@ const navItems: NavItem[] = [
   { label: 'Plots', icon: LandPlot, path: '/plots' },
   { label: 'Survey', icon: Map, path: '/surveys' },
   { label: 'GIS Map', icon: Globe, path: '/gis' },
+  { label: 'Site Visits', icon: Bus, path: '/site-visits' },
   { label: 'Reservations', icon: CalendarClock, path: '/reservations' },
   { label: 'Leads', icon: Contact, path: '/crm/leads' },
   { label: 'Customers', icon: Users, path: '/crm/customers' },
