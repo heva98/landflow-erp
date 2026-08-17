@@ -1,8 +1,10 @@
 import {
   ArrowLeftRight,
+  Briefcase,
   Building2,
   Bus,
   CalendarClock,
+  CalendarOff,
   ClipboardList,
   Contact,
   FileText,
@@ -15,6 +17,7 @@ import {
   PieChart,
   Receipt,
   Scale,
+  UserSquare2,
   Users,
   Wallet,
 } from 'lucide-react'
@@ -47,6 +50,11 @@ const navItems: NavItem[] = [
   { label: 'Reports', icon: ClipboardList, path: '/reports' },
   { label: 'Documents', icon: FileText, path: '/documents' },
   { label: 'Legal', icon: Scale, path: '/legal' },
+  { label: 'Employees', icon: Briefcase, path: '/hr/employees' },
+  { label: 'Leave Requests', icon: CalendarOff, path: '/hr/leave-requests' },
+  { label: 'Payroll', icon: Wallet, path: '/hr/payroll' },
+  { label: 'Agents', icon: UserSquare2, path: '/agents' },
+  { label: 'Commission Payments', icon: Receipt, path: '/agents/commission-payments' },
 ]
 
 export function Sidebar() {

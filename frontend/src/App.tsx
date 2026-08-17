@@ -7,6 +7,11 @@ import { AcquisitionCreatePage } from '@/features/acquisitions/pages/acquisition
 import { AcquisitionDetailPage } from '@/features/acquisitions/pages/acquisition-detail-page'
 import { AcquisitionEditPage } from '@/features/acquisitions/pages/acquisition-edit-page'
 import { AcquisitionsListPage } from '@/features/acquisitions/pages/acquisitions-list-page'
+import { AgentDetailPage } from '@/features/agents/pages/agent-detail-page'
+import { AgentsListPage } from '@/features/agents/pages/agents-list-page'
+import { CommissionPaymentsPage } from '@/features/agents/pages/commission-payments-page'
+import { CommissionSettingsPage } from '@/features/agents/pages/commission-settings-page'
+import { RankingsPage } from '@/features/agents/pages/rankings-page'
 import { LoginPage } from '@/features/auth/pages/login-page'
 import { CustomerCreatePage } from '@/features/crm/pages/customer-create-page'
 import { CustomerDetailPage } from '@/features/crm/pages/customer-detail-page'
@@ -20,6 +25,13 @@ import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { DocumentDetailPage } from '@/features/documents/pages/document-detail-page'
 import { DocumentsListPage } from '@/features/documents/pages/documents-list-page'
 import { GisPage } from '@/features/gis/pages/gis-page'
+import { EmployeeCreatePage } from '@/features/hr/pages/employee-create-page'
+import { EmployeeDetailPage } from '@/features/hr/pages/employee-detail-page'
+import { EmployeeEditPage } from '@/features/hr/pages/employee-edit-page'
+import { EmployeesListPage } from '@/features/hr/pages/employees-list-page'
+import { HrSettingsPage } from '@/features/hr/pages/hr-settings-page'
+import { LeaveRequestsPage } from '@/features/hr/pages/leave-requests-page'
+import { PayrollPage } from '@/features/hr/pages/payroll-page'
 import { OwnershipTransferDetailPage } from '@/features/legal/pages/ownership-transfer-detail-page'
 import { LegalPage } from '@/features/legal/pages/legal-page'
 import { BookingDetailPage } from '@/features/site-visits/pages/booking-detail-page'
@@ -112,6 +124,18 @@ function AppRoutes() {
         <Route path="/crm/customers/new" element={<CustomerCreatePage />} />
         <Route path="/crm/customers/:id" element={<CustomerDetailPage />} />
         <Route path="/crm/customers/:id/edit" element={<CustomerEditPage />} />
+        <Route path="/hr/employees" element={<EmployeesListPage />} />
+        <Route path="/hr/employees/new" element={<EmployeeCreatePage />} />
+        <Route path="/hr/employees/:id" element={<EmployeeDetailPage />} />
+        <Route path="/hr/employees/:id/edit" element={<EmployeeEditPage />} />
+        <Route path="/hr/departments" element={<HrSettingsPage />} />
+        <Route path="/hr/leave-requests" element={<LeaveRequestsPage />} />
+        <Route path="/hr/payroll" element={<PayrollPage />} />
+        <Route path="/agents" element={<AgentsListPage />} />
+        <Route path="/agents/settings" element={<CommissionSettingsPage />} />
+        <Route path="/agents/rankings" element={<RankingsPage />} />
+        <Route path="/agents/commission-payments" element={<CommissionPaymentsPage />} />
+        <Route path="/agents/:id" element={<AgentDetailPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
