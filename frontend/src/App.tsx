@@ -19,6 +19,7 @@ import { LeadsPipelinePage } from '@/features/crm/pages/leads-pipeline-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { DocumentDetailPage } from '@/features/documents/pages/document-detail-page'
 import { DocumentsListPage } from '@/features/documents/pages/documents-list-page'
+import { GisPage } from '@/features/gis/pages/gis-page'
 import { OwnershipTransferDetailPage } from '@/features/legal/pages/ownership-transfer-detail-page'
 import { LegalPage } from '@/features/legal/pages/legal-page'
 import { SubdivisionDetailPage } from '@/features/surveys/pages/subdivision-detail-page'
@@ -90,6 +91,7 @@ function AppRoutes() {
         <Route path="/surveys/directory" element={<SurveyDirectoryPage />} />
         <Route path="/surveys/:id" element={<SurveyDetailPage />} />
         <Route path="/surveys/:id/subdivision" element={<SubdivisionDetailPage />} />
+        <Route path="/gis" element={<GisPage />} />
         <Route path="/crm/leads" element={<LeadsPipelinePage />} />
         <Route path="/crm/leads/new" element={<LeadCreatePage />} />
         <Route path="/crm/leads/:id" element={<LeadDetailPage />} />
