@@ -1,7 +1,7 @@
 import uuid
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import timezone
@@ -46,6 +46,8 @@ class SaleAgreement(BaseModel):
     approved_at = models.DateTimeField(null=True, blank=True)
     voided_at = models.DateTimeField(null=True, blank=True)
     void_reason = models.TextField(blank=True)
+
+    witnesses = GenericRelation('legal.Witness', content_type_field='content_type', object_id_field='object_id')
 
     class Meta:
         ordering = ['-created_at']
@@ -125,6 +127,8 @@ class PowerOfAttorney(BaseModel):
     revoked_at = models.DateTimeField(null=True, blank=True)
     revocation_reason = models.TextField(blank=True)
 
+    witnesses = GenericRelation('legal.Witness', content_type_field='content_type', object_id_field='object_id')
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = 'Power of attorney'
@@ -178,6 +182,8 @@ class Contract(BaseModel):
         on_delete=models.SET_NULL, related_name='contracts_created',
     )
 
+    witnesses = GenericRelation('legal.Witness', content_type_field='content_type', object_id_field='object_id')
+
     class Meta:
         ordering = ['-created_at']
         indexes = [models.Index(fields=['content_type', 'object_id'])]
@@ -216,6 +222,8 @@ class OwnershipTransfer(BaseModel):
     completed_at = models.DateTimeField(null=True, blank=True)
     rejection_reason = models.TextField(blank=True)
     notes = models.TextField(blank=True)
+
+    witnesses = GenericRelation('legal.Witness', content_type_field='content_type', object_id_field='object_id')
 
     class Meta:
         ordering = ['-created_at']

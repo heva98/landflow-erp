@@ -1,0 +1,11 @@
+Legal team,
+
+Ownership transfer {{ transfer_number }} for sale {{ sale_number }} has been completed.
+
+  Plot: {{ plot_number }} ({{ project_name }})
+  Customer: {{ customer_name }}
+  Completed by: {{ completed_by }}
+
+The plot has been marked Transferred. Please proceed with title deed handover and filing.
+
+LandFlow ERP
