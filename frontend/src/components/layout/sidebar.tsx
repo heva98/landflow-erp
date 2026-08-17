@@ -12,6 +12,7 @@ import {
   Map,
   PieChart,
   Receipt,
+  Scale,
   Users,
   Wallet,
 } from 'lucide-react'
@@ -30,7 +31,7 @@ const navItems: NavItem[] = [
   { label: 'Land Acquisition', icon: Handshake, path: '/acquisitions' },
   { label: 'Projects', icon: Building2, path: '/projects' },
   { label: 'Plots', icon: LandPlot, path: '/plots' },
-  { label: 'Survey', icon: Map },
+  { label: 'Survey', icon: Map, path: '/surveys' },
   { label: 'Reservations', icon: CalendarClock, path: '/reservations' },
   { label: 'Leads', icon: Contact, path: '/crm/leads' },
   { label: 'Customers', icon: Users, path: '/crm/customers' },
@@ -41,6 +42,7 @@ const navItems: NavItem[] = [
   { label: 'Finance Reports', icon: PieChart, path: '/finance/reports' },
   { label: 'Reports', icon: ClipboardList, path: '/reports' },
   { label: 'Documents', icon: FileText, path: '/documents' },
+  { label: 'Legal', icon: Scale, path: '/legal' },
 ]
 
 export function Sidebar() {

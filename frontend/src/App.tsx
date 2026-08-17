@@ -19,6 +19,13 @@ import { LeadsPipelinePage } from '@/features/crm/pages/leads-pipeline-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { DocumentDetailPage } from '@/features/documents/pages/document-detail-page'
 import { DocumentsListPage } from '@/features/documents/pages/documents-list-page'
+import { OwnershipTransferDetailPage } from '@/features/legal/pages/ownership-transfer-detail-page'
+import { LegalPage } from '@/features/legal/pages/legal-page'
+import { SubdivisionDetailPage } from '@/features/surveys/pages/subdivision-detail-page'
+import { SurveyCreatePage } from '@/features/surveys/pages/survey-create-page'
+import { SurveyDetailPage } from '@/features/surveys/pages/survey-detail-page'
+import { SurveyDirectoryPage } from '@/features/surveys/pages/survey-directory-page'
+import { SurveysListPage } from '@/features/surveys/pages/surveys-list-page'
 import { AccountsPage } from '@/features/finance/pages/accounts-page'
 import { FinanceReportsPage } from '@/features/finance/pages/finance-reports-page'
 import { TransactionsPage } from '@/features/finance/pages/transactions-page'
@@ -76,6 +83,13 @@ function AppRoutes() {
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/documents" element={<DocumentsListPage />} />
         <Route path="/documents/:id" element={<DocumentDetailPage />} />
+        <Route path="/legal" element={<LegalPage />} />
+        <Route path="/legal/ownership-transfers/:id" element={<OwnershipTransferDetailPage />} />
+        <Route path="/surveys" element={<SurveysListPage />} />
+        <Route path="/surveys/new" element={<SurveyCreatePage />} />
+        <Route path="/surveys/directory" element={<SurveyDirectoryPage />} />
+        <Route path="/surveys/:id" element={<SurveyDetailPage />} />
+        <Route path="/surveys/:id/subdivision" element={<SubdivisionDetailPage />} />
         <Route path="/crm/leads" element={<LeadsPipelinePage />} />
         <Route path="/crm/leads/new" element={<LeadCreatePage />} />
         <Route path="/crm/leads/:id" element={<LeadDetailPage />} />
