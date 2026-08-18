@@ -38,6 +38,8 @@ urlpatterns = [
     path('api/v1/', include('apps.hr.urls')),
     path('api/v1/', include('apps.agents.urls')),
     path('api/v1/', include('apps.inventory.urls')),
+    path('api/v1/', include('apps.core.urls')),
+    path('api/v1/', include('apps.administration.urls')),
 ]
 
 if settings.DEBUG:

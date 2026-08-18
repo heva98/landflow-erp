@@ -23,6 +23,11 @@ def administrator_role(db):
 
 
 @pytest.fixture
+def managing_director_role(db):
+    return Role.objects.get(name='Managing Director')
+
+
+@pytest.fixture
 def customer_role(db):
     # Not granted any permissions anywhere in the seeding migrations — an
     # internal-admin-API role with genuinely nothing, unlike Sales Agent
@@ -48,6 +53,13 @@ def user_without_permissions(db, customer_role):
 def admin_user(db, administrator_role):
     return User.objects.create_user(
         email='admin@landflow.co.tz', password='s3cure-pass', role=administrator_role,
+    )
+
+
+@pytest.fixture
+def managing_director(db, managing_director_role):
+    return User.objects.create_user(
+        email='md@landflow.co.tz', password='s3cure-pass', role=managing_director_role,
     )
 
 
@@ -141,3 +153,54 @@ def test_explicit_role_permission_grants_access(api_client, sales_agent_role, us
     api_client.force_authenticate(user=user)
     response = api_client.get(reverse('user-list'))
     assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_creating_a_user_via_the_api_sets_a_usable_password(api_client, admin_user):
+    # JSON, matching how the frontend actually submits this form — a plain
+    # multipart POST would make DRF treat the omitted `is_active` boolean as
+    # False (HTML-checkbox semantics), which isn't the real client behaviour.
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.post(
+        reverse('user-list'), {'email': 'created@landflow.co.tz', 'password': 'brand-new-pass'}, format='json',
+    )
+    assert response.status_code == status.HTTP_201_CREATED
+
+    login = api_client.post(
+        reverse('token_obtain_pair'), {'email': 'created@landflow.co.tz', 'password': 'brand-new-pass'},
+    )
+    assert login.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_updating_a_user_password_replaces_it(api_client, admin_user, user):
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.patch(reverse('user-detail', args=[user.id]), {'password': 'a-new-password'})
+    assert response.status_code == status.HTTP_200_OK
+
+    login = api_client.post(reverse('token_obtain_pair'), {'email': user.email, 'password': 'a-new-password'})
+    assert login.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_managing_director_can_view_roles(api_client, managing_director):
+    api_client.force_authenticate(user=managing_director)
+    response = api_client.get(reverse('role-list'))
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_role_serializer_exposes_granted_permission_codenames(api_client, managing_director, sales_agent_role):
+    view_user_perm = Permission.objects.get(content_type__app_label='accounts', codename='view_user')
+    sales_agent_role.permissions.add(view_user_perm)
+    api_client.force_authenticate(user=managing_director)
+    response = api_client.get(reverse('role-detail', args=[sales_agent_role.id]))
+    assert response.status_code == status.HTTP_200_OK
+    assert 'accounts.view_user' in response.data['permissions']
+
+
+@pytest.mark.django_db
+def test_role_serializer_reports_full_access_as_wildcard(api_client, admin_user, administrator_role):
+    api_client.force_authenticate(user=admin_user)
+    response = api_client.get(reverse('role-detail', args=[administrator_role.id]))
+    assert response.data['permissions'] == ['*']
