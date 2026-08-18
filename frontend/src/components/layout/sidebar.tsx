@@ -1,5 +1,6 @@
 import {
   ArrowLeftRight,
+  BookOpen,
   Briefcase,
   Building2,
   Bus,
@@ -20,6 +21,7 @@ import {
   UserSquare2,
   Users,
   Wallet,
+  Warehouse,
 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 
@@ -36,6 +38,7 @@ const navItems: NavItem[] = [
   { label: 'Land Acquisition', icon: Handshake, path: '/acquisitions' },
   { label: 'Projects', icon: Building2, path: '/projects' },
   { label: 'Plots', icon: LandPlot, path: '/plots' },
+  { label: 'Inventory', icon: Warehouse, path: '/inventory' },
   { label: 'Survey', icon: Map, path: '/surveys' },
   { label: 'GIS Map', icon: Globe, path: '/gis' },
   { label: 'Site Visits', icon: Bus, path: '/site-visits' },
@@ -57,39 +60,44 @@ const navItems: NavItem[] = [
   { label: 'Commission Payments', icon: Receipt, path: '/agents/commission-payments' },
 ]
 
+const helpItems: NavItem[] = [{ label: 'User Manual', icon: BookOpen, path: '/manual' }]
+
+function renderNavItem({ label, icon: Icon, path }: NavItem) {
+  return path ? (
+    <NavLink
+      key={label}
+      to={path}
+      className={({ isActive }) =>
+        cn(
+          'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+          isActive
+            ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+            : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+        )
+      }
+    >
+      <Icon className="size-4" />
+      {label}
+    </NavLink>
+  ) : (
+    <span
+      key={label}
+      className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/40"
+    >
+      <Icon className="size-4" />
+      {label}
+    </span>
+  )
+}
+
 export function Sidebar() {
   return (
     <aside className="flex h-svh w-64 shrink-0 flex-col bg-sidebar text-sidebar-foreground">
-      <div className="flex h-16 items-center px-6 text-lg font-semibold">LandFlow ERP</div>
-      <nav className="flex flex-1 flex-col gap-1 px-3">
-        {navItems.map(({ label, icon: Icon, path }) =>
-          path ? (
-            <NavLink
-              key={label}
-              to={path}
-              className={({ isActive }) =>
-                cn(
-                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-sidebar-primary text-sidebar-primary-foreground'
-                    : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-                )
-              }
-            >
-              <Icon className="size-4" />
-              {label}
-            </NavLink>
-          ) : (
-            <span
-              key={label}
-              className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/40"
-            >
-              <Icon className="size-4" />
-              {label}
-            </span>
-          ),
-        )}
-      </nav>
+      <div className="flex h-16 shrink-0 items-center px-6 text-lg font-semibold">LandFlow ERP</div>
+      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3">{navItems.map(renderNavItem)}</nav>
+      <div className="flex shrink-0 flex-col gap-1 border-t border-sidebar-border px-3 py-3">
+        {helpItems.map(renderNavItem)}
+      </div>
     </aside>
   )
 }

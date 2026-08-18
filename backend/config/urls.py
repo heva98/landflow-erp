@@ -37,6 +37,7 @@ urlpatterns = [
     path('api/v1/', include('apps.site_visits.urls')),
     path('api/v1/', include('apps.hr.urls')),
     path('api/v1/', include('apps.agents.urls')),
+    path('api/v1/', include('apps.inventory.urls')),
 ]
 
 if settings.DEBUG:

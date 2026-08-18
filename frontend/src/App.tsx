@@ -13,6 +13,7 @@ import { CommissionPaymentsPage } from '@/features/agents/pages/commission-payme
 import { CommissionSettingsPage } from '@/features/agents/pages/commission-settings-page'
 import { RankingsPage } from '@/features/agents/pages/rankings-page'
 import { LoginPage } from '@/features/auth/pages/login-page'
+import { ManualPage } from '@/features/manual/pages/manual-page'
 import { CustomerCreatePage } from '@/features/crm/pages/customer-create-page'
 import { CustomerDetailPage } from '@/features/crm/pages/customer-detail-page'
 import { CustomerEditPage } from '@/features/crm/pages/customer-edit-page'
@@ -32,6 +33,7 @@ import { EmployeesListPage } from '@/features/hr/pages/employees-list-page'
 import { HrSettingsPage } from '@/features/hr/pages/hr-settings-page'
 import { LeaveRequestsPage } from '@/features/hr/pages/leave-requests-page'
 import { PayrollPage } from '@/features/hr/pages/payroll-page'
+import { InventoryPage } from '@/features/inventory/pages/inventory-page'
 import { OwnershipTransferDetailPage } from '@/features/legal/pages/ownership-transfer-detail-page'
 import { LegalPage } from '@/features/legal/pages/legal-page'
 import { BookingDetailPage } from '@/features/site-visits/pages/booking-detail-page'
@@ -77,6 +79,7 @@ function AppRoutes() {
         }
       >
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/manual" element={<ManualPage />} />
         <Route path="/acquisitions" element={<AcquisitionsListPage />} />
         <Route path="/acquisitions/new" element={<AcquisitionCreatePage />} />
         <Route path="/acquisitions/:id" element={<AcquisitionDetailPage />} />
@@ -136,6 +139,7 @@ function AppRoutes() {
         <Route path="/agents/rankings" element={<RankingsPage />} />
         <Route path="/agents/commission-payments" element={<CommissionPaymentsPage />} />
         <Route path="/agents/:id" element={<AgentDetailPage />} />
+        <Route path="/inventory" element={<InventoryPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
