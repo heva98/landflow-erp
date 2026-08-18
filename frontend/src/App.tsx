@@ -12,6 +12,8 @@ import { AgentsListPage } from '@/features/agents/pages/agents-list-page'
 import { CommissionPaymentsPage } from '@/features/agents/pages/commission-payments-page'
 import { CommissionSettingsPage } from '@/features/agents/pages/commission-settings-page'
 import { RankingsPage } from '@/features/agents/pages/rankings-page'
+import { AdministrationPage } from '@/features/administration/pages/administration-page'
+import { UsersListPage } from '@/features/accounts/pages/users-list-page'
 import { LoginPage } from '@/features/auth/pages/login-page'
 import { ManualPage } from '@/features/manual/pages/manual-page'
 import { CustomerCreatePage } from '@/features/crm/pages/customer-create-page'
@@ -140,6 +142,8 @@ function AppRoutes() {
         <Route path="/agents/commission-payments" element={<CommissionPaymentsPage />} />
         <Route path="/agents/:id" element={<AgentDetailPage />} />
         <Route path="/inventory" element={<InventoryPage />} />
+        <Route path="/users" element={<UsersListPage />} />
+        <Route path="/administration" element={<AdministrationPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

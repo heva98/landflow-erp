@@ -18,6 +18,8 @@ import {
   PieChart,
   Receipt,
   Scale,
+  ShieldCheck,
+  UserCog,
   UserSquare2,
   Users,
   Wallet,
@@ -58,6 +60,8 @@ const navItems: NavItem[] = [
   { label: 'Payroll', icon: Wallet, path: '/hr/payroll' },
   { label: 'Agents', icon: UserSquare2, path: '/agents' },
   { label: 'Commission Payments', icon: Receipt, path: '/agents/commission-payments' },
+  { label: 'Users', icon: UserCog, path: '/users' },
+  { label: 'Administration', icon: ShieldCheck, path: '/administration' },
 ]
 
 const helpItems: NavItem[] = [{ label: 'User Manual', icon: BookOpen, path: '/manual' }]

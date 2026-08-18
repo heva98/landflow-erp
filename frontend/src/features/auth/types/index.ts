@@ -4,6 +4,7 @@ export interface Role {
   description: string
   full_access: boolean
   read_only_all: boolean
+  permissions: string[]
 }
 
 export interface User {
