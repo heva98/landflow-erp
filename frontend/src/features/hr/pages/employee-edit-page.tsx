@@ -37,10 +37,8 @@ export function EmployeeEditPage() {
           emergency_contact_phone: employee.emergency_contact_phone,
           notes: employee.notes,
         }}
-        onSubmit={async (input) => {
-          await updateEmployee.mutateAsync(input)
-          navigate(`/hr/employees/${employee.id}`)
-        }}
+        onSubmit={(input) => updateEmployee.mutateAsync(input)}
+        onSuccess={() => navigate(`/hr/employees/${employee.id}`)}
       />
     </div>
   )

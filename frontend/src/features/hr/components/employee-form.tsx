@@ -10,8 +10,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { useCreateDocumentMutation } from '@/features/documents/hooks/use-documents'
+import type { DocumentType } from '@/features/documents/types'
 
-import { EMPLOYMENT_TYPE_LABELS, EMPLOYMENT_TYPES, type EmployeeInput } from '../types'
+import { EMPLOYMENT_TYPE_LABELS, EMPLOYMENT_TYPES, type Employee, type EmployeeInput } from '../types'
 import { DepartmentSelect, EmployeeSelect } from './selects'
 
 const employeeFormSchema = z.object({
@@ -32,6 +34,10 @@ const employeeFormSchema = z.object({
   emergency_contact_name: z.string().max(255).optional(),
   emergency_contact_phone: z.string().max(30).optional(),
   notes: z.string().max(2000).optional(),
+  cv_file: z.instanceof(FileList).optional(),
+  academic_certificates: z.instanceof(FileList).optional(),
+  academic_transcripts: z.instanceof(FileList).optional(),
+  passport_photo: z.instanceof(FileList).optional(),
 })
 
 export type EmployeeFormValues = z.infer<typeof employeeFormSchema>
@@ -39,11 +45,33 @@ export type EmployeeFormValues = z.infer<typeof employeeFormSchema>
 interface EmployeeFormProps {
   defaultValues?: Partial<EmployeeFormValues>
   submitLabel: string
-  onSubmit: (input: EmployeeInput) => Promise<unknown>
+  onSubmit: (input: EmployeeInput) => Promise<Employee>
+  onSuccess: (employee: Employee) => void
+  /** Show the CV/certificates/transcripts/passport photo uploaders — only meaningful on the create form. */
+  showDocumentUpload?: boolean
 }
 
-export function EmployeeForm({ defaultValues, submitLabel, onSubmit }: EmployeeFormProps) {
+function inferDocumentType(fileName: string): DocumentType {
+  const extension = fileName.split('.').pop()?.toLowerCase() ?? ''
+  if (extension === 'pdf') return 'pdf'
+  if (['doc', 'docx'].includes(extension)) return 'word'
+  if (['xls', 'xlsx'].includes(extension)) return 'excel'
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) return 'image'
+  return 'other'
+}
+
+function collectEmployeeDocuments(values: EmployeeFormValues) {
+  const uploads: { file: File; category: string }[] = []
+  if (values.cv_file?.[0]) uploads.push({ file: values.cv_file[0], category: 'CV' })
+  for (const file of values.academic_certificates ?? []) uploads.push({ file, category: 'Academic Certificate' })
+  for (const file of values.academic_transcripts ?? []) uploads.push({ file, category: 'Academic Transcript' })
+  if (values.passport_photo?.[0]) uploads.push({ file: values.passport_photo[0], category: 'Passport Photo' })
+  return uploads
+}
+
+export function EmployeeForm({ defaultValues, submitLabel, onSubmit, onSuccess, showDocumentUpload }: EmployeeFormProps) {
   const [formError, setFormError] = useState<string | null>(null)
+  const createDocument = useCreateDocumentMutation()
 
   const {
     register,
@@ -58,7 +86,7 @@ export function EmployeeForm({ defaultValues, submitLabel, onSubmit }: EmployeeF
   async function submit(values: EmployeeFormValues) {
     setFormError(null)
     try {
-      await onSubmit({
+      const employee = await onSubmit({
         full_name: values.full_name,
         job_title: values.job_title ?? '',
         department: values.department || null,
@@ -77,6 +105,26 @@ export function EmployeeForm({ defaultValues, submitLabel, onSubmit }: EmployeeF
         emergency_contact_phone: values.emergency_contact_phone ?? '',
         notes: values.notes ?? '',
       })
+
+      if (showDocumentUpload) {
+        // Best-effort: the employee record already exists, so a failed upload
+        // here shouldn't block navigation — any missing file can be added
+        // again from the employee's Documents tab.
+        await Promise.allSettled(
+          collectEmployeeDocuments(values).map(({ file, category }) =>
+            createDocument.mutateAsync({
+              title: `${category} — ${employee.full_name}`,
+              document_type: inferDocumentType(file.name),
+              category,
+              content_type: 'hr.employee',
+              object_id: employee.id,
+              file,
+            }),
+          ),
+        )
+      }
+
+      onSuccess(employee)
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 403) {
         setFormError("You don't have permission to do that.")
@@ -211,6 +259,48 @@ export function EmployeeForm({ defaultValues, submitLabel, onSubmit }: EmployeeF
           <Textarea id="notes" rows={3} {...register('notes')} />
         </div>
       </div>
+
+      {showDocumentUpload && (
+        <div className="flex flex-col gap-4 rounded-lg border border-border p-4">
+          <div>
+            <h2 className="text-sm font-semibold text-foreground">Documents</h2>
+            <p className="text-sm text-muted-foreground">Optional — you can also add these later from the employee page.</p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="cv_file">CV</Label>
+              <Input id="cv_file" type="file" accept=".pdf,.doc,.docx" {...register('cv_file')} />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="passport_photo">Passport photo</Label>
+              <Input id="passport_photo" type="file" accept="image/*" {...register('passport_photo')} />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="academic_certificates">Academic certificates</Label>
+              <Input
+                id="academic_certificates"
+                type="file"
+                multiple
+                accept=".pdf,.jpg,.jpeg,.png"
+                {...register('academic_certificates')}
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="academic_transcripts">Academic transcripts</Label>
+              <Input
+                id="academic_transcripts"
+                type="file"
+                multiple
+                accept=".pdf,.jpg,.jpeg,.png"
+                {...register('academic_transcripts')}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {formError && <p className="text-sm text-destructive">{formError}</p>}
 

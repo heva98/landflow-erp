@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/features/auth/hooks/use-auth'
 import { useAgentsQuery } from '@/features/agents/hooks/use-agents'
+import { DocumentsPanel } from '@/features/documents/components/documents-panel'
 import { formatTZS } from '@/lib/utils'
 
 import { AddPerformanceReviewDialog } from '../components/add-performance-review-dialog'
@@ -118,6 +119,7 @@ export function EmployeeDetailPage() {
           <TabsTrigger value="leave">Leave</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="payroll">Payroll</TabsTrigger>
+          <TabsTrigger value="documents">Documents</TabsTrigger>
         </TabsList>
 
         <TabsContent value="attendance">
@@ -264,6 +266,10 @@ export function EmployeeDetailPage() {
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="documents">
+          <DocumentsPanel contentType="hr.employee" objectId={employee.id} title="Documents" />
         </TabsContent>
       </Tabs>
 
