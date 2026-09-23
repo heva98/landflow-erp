@@ -126,6 +126,7 @@ export function AgentDetailPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">SN</TableHead>
                     <TableHead>Period</TableHead>
                     <TableHead>Target</TableHead>
                     <TableHead>Achieved</TableHead>
@@ -136,11 +137,12 @@ export function AgentDetailPage() {
                 <TableBody>
                   {targets && targets.results.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center text-muted-foreground">No sales targets yet.</TableCell>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground">No sales targets yet.</TableCell>
                     </TableRow>
                   )}
-                  {targets?.results.map((target) => (
+                  {targets?.results.map((target, index) => (
                     <TableRow key={target.id}>
+                      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                       <TableCell>{formatDate(target.period_start)} – {formatDate(target.period_end)}</TableCell>
                       <TableCell>{formatTZS(target.target_amount)}</TableCell>
                       <TableCell>{formatTZS(target.achieved_amount)}</TableCell>
@@ -163,6 +165,7 @@ export function AgentDetailPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">SN</TableHead>
                     <TableHead>Sale</TableHead>
                     <TableHead>Amount</TableHead>
                     <TableHead>Status</TableHead>
@@ -172,11 +175,12 @@ export function AgentDetailPage() {
                 <TableBody>
                   {payments && payments.results.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center text-muted-foreground">No commission payments yet.</TableCell>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">No commission payments yet.</TableCell>
                     </TableRow>
                   )}
-                  {payments?.results.map((payment) => (
+                  {payments?.results.map((payment, index) => (
                     <TableRow key={payment.id}>
+                      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                       <TableCell>{payment.sale_number ?? '—'}</TableCell>
                       <TableCell>{formatTZS(payment.amount)}</TableCell>
                       <TableCell>

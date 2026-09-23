@@ -123,6 +123,7 @@ function ProfitAndLossView({
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Account</TableHead>
                 <TableHead>Amount</TableHead>
               </TableRow>
@@ -130,13 +131,14 @@ function ProfitAndLossView({
             <TableBody>
               {data.income.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={2} className="text-center text-muted-foreground">
+                  <TableCell colSpan={3} className="text-center text-muted-foreground">
                     No income in this period.
                   </TableCell>
                 </TableRow>
               )}
-              {data.income.map((line) => (
+              {data.income.map((line, index) => (
                 <TableRow key={line.account}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell>
                     {line.code} - {line.name}
                   </TableCell>
@@ -156,6 +158,7 @@ function ProfitAndLossView({
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Account</TableHead>
                 <TableHead>Amount</TableHead>
               </TableRow>
@@ -163,13 +166,14 @@ function ProfitAndLossView({
             <TableBody>
               {data.expenses.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={2} className="text-center text-muted-foreground">
+                  <TableCell colSpan={3} className="text-center text-muted-foreground">
                     No expenses in this period.
                   </TableCell>
                 </TableRow>
               )}
-              {data.expenses.map((line) => (
+              {data.expenses.map((line, index) => (
                 <TableRow key={line.account}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell>
                     {line.code} - {line.name}
                   </TableCell>
@@ -231,6 +235,7 @@ function CashFlowView({
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Account</TableHead>
                 <TableHead>Kind</TableHead>
                 <TableHead>Opening</TableHead>
@@ -242,13 +247,14 @@ function CashFlowView({
             <TableBody>
               {data.accounts.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center text-muted-foreground">
                     No cash or bank accounts yet.
                   </TableCell>
                 </TableRow>
               )}
-              {data.accounts.map((account) => (
+              {data.accounts.map((account, index) => (
                 <TableRow key={account.cash_bank_account}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{account.name}</TableCell>
                   <TableCell>{CASH_BANK_KIND_LABELS[account.kind]}</TableCell>
                   <TableCell>{formatTZS(account.opening_balance)}</TableCell>

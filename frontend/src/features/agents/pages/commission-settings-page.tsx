@@ -46,6 +46,7 @@ function CommissionPlansTab() {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-12">SN</TableHead>
                       <TableHead>Min amount</TableHead>
                       <TableHead>Max amount</TableHead>
                       <TableHead>Rate</TableHead>
@@ -54,11 +55,12 @@ function CommissionPlansTab() {
                   <TableBody>
                     {plan.tiers.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={3} className="text-center text-muted-foreground">No tiers yet.</TableCell>
+                        <TableCell colSpan={4} className="text-center text-muted-foreground">No tiers yet.</TableCell>
                       </TableRow>
                     )}
-                    {plan.tiers.map((tier) => (
+                    {plan.tiers.map((tier, index) => (
                       <TableRow key={tier.id}>
+                        <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                         <TableCell>{formatTZS(tier.min_amount)}</TableCell>
                         <TableCell>{tier.max_amount ? formatTZS(tier.max_amount) : 'No limit'}</TableCell>
                         <TableCell>{tier.rate_percent}%</TableCell>
@@ -88,6 +90,7 @@ function TerritoriesTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Region</TableHead>
             </TableRow>
@@ -95,16 +98,17 @@ function TerritoriesTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={2} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={3} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={2} className="text-center text-muted-foreground">No territories yet.</TableCell>
+                <TableCell colSpan={3} className="text-center text-muted-foreground">No territories yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((territory) => (
+            {data?.results.map((territory, index) => (
               <TableRow key={territory.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{territory.name}</TableCell>
                 <TableCell>{territory.region || '—'}</TableCell>
               </TableRow>

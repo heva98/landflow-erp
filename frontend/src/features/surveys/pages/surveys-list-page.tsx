@@ -72,6 +72,7 @@ export function SurveysListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Reference</TableHead>
               <TableHead>Project</TableHead>
               <TableHead>Company</TableHead>
@@ -83,27 +84,28 @@ export function SurveysListPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   Loading surveys…
                 </TableCell>
               </TableRow>
             )}
             {isError && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-destructive">
+                <TableCell colSpan={7} className="text-center text-destructive">
                   Failed to load surveys.
                 </TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   No surveys yet.
                 </TableCell>
               </TableRow>
             )}
-            {data?.results.map((survey) => (
+            {data?.results.map((survey, index) => (
               <TableRow key={survey.id} className="cursor-pointer" onClick={() => navigate(`/surveys/${survey.id}`)}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/surveys/${survey.id}`} className="hover:underline">
                     {survey.reference_number}

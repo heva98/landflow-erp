@@ -18,6 +18,7 @@ export function CurrenciesTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Code</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Symbol</TableHead>
@@ -29,16 +30,17 @@ export function CurrenciesTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">No currencies yet.</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">No currencies yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((currency) => (
+            {data?.results.map((currency, index) => (
               <TableRow key={currency.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{currency.code}</TableCell>
                 <TableCell>{currency.name}</TableCell>
                 <TableCell>{currency.symbol || '—'}</TableCell>

@@ -184,6 +184,7 @@ export function SiteVisitsDirectoryPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">SN</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>License #</TableHead>
@@ -193,16 +194,17 @@ export function SiteVisitsDirectoryPage() {
               <TableBody>
                 {driversLoading && (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground">Loading…</TableCell>
+                    <TableCell colSpan={5} className="text-center text-muted-foreground">Loading…</TableCell>
                   </TableRow>
                 )}
                 {drivers && drivers.results.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground">No drivers yet.</TableCell>
+                    <TableCell colSpan={5} className="text-center text-muted-foreground">No drivers yet.</TableCell>
                   </TableRow>
                 )}
-                {drivers?.results.map((driver) => (
+                {drivers?.results.map((driver, index) => (
                   <TableRow key={driver.id}>
+                    <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                     <TableCell className="font-medium text-foreground">{driver.full_name}</TableCell>
                     <TableCell>{driver.phone || '—'}</TableCell>
                     <TableCell>{driver.license_number || '—'}</TableCell>
@@ -224,6 +226,7 @@ export function SiteVisitsDirectoryPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">SN</TableHead>
                   <TableHead>Registration</TableHead>
                   <TableHead>Capacity</TableHead>
                   <TableHead>Driver</TableHead>
@@ -233,16 +236,17 @@ export function SiteVisitsDirectoryPage() {
               <TableBody>
                 {busesLoading && (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground">Loading…</TableCell>
+                    <TableCell colSpan={5} className="text-center text-muted-foreground">Loading…</TableCell>
                   </TableRow>
                 )}
                 {buses && buses.results.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground">No buses yet.</TableCell>
+                    <TableCell colSpan={5} className="text-center text-muted-foreground">No buses yet.</TableCell>
                   </TableRow>
                 )}
-                {buses?.results.map((bus) => (
+                {buses?.results.map((bus, index) => (
                   <TableRow key={bus.id}>
+                    <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                     <TableCell className="font-medium text-foreground">{bus.registration_number}</TableCell>
                     <TableCell>{bus.capacity}</TableCell>
                     <TableCell>{bus.driver_name ?? '—'}</TableCell>

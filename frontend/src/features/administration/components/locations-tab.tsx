@@ -38,6 +38,7 @@ export function LocationsTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Parent</TableHead>
@@ -48,16 +49,17 @@ export function LocationsTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">No locations yet.</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">No locations yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((location) => (
+            {data?.results.map((location, index) => (
               <TableRow key={location.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{location.name}</TableCell>
                 <TableCell>{LOCATION_TYPE_LABELS[location.location_type]}</TableCell>
                 <TableCell>{location.parent_name ?? '—'}</TableCell>

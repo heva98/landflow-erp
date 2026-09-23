@@ -142,6 +142,7 @@ export function SaleAgreementsTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Agreement #</TableHead>
               <TableHead>Sale</TableHead>
               <TableHead>Status</TableHead>
@@ -153,16 +154,17 @@ export function SaleAgreementsTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">No sale agreements yet.</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">No sale agreements yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((agreement) => (
+            {data?.results.map((agreement, index) => (
               <TableRow key={agreement.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{agreement.agreement_number}</TableCell>
                 <TableCell>{agreement.sale_number}</TableCell>
                 <TableCell>

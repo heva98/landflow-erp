@@ -140,6 +140,7 @@ export function PowersOfAttorneyTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>POA #</TableHead>
               <TableHead>Grantor</TableHead>
               <TableHead>Grantee</TableHead>
@@ -151,16 +152,17 @@ export function PowersOfAttorneyTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">No powers of attorney yet.</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">No powers of attorney yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((poa) => (
+            {data?.results.map((poa, index) => (
               <TableRow key={poa.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{poa.poa_number}</TableCell>
                 <TableCell>{poa.grantor_name}</TableCell>
                 <TableCell>{poa.grantee_name}</TableCell>

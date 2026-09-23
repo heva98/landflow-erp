@@ -53,6 +53,7 @@ export function TransactionsPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Income #</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Account</TableHead>
@@ -65,20 +66,21 @@ export function TransactionsPage() {
             <TableBody>
               {incomeQuery.isLoading && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center text-muted-foreground">
                     Loading…
                   </TableCell>
                 </TableRow>
               )}
               {incomeQuery.data && incomeQuery.data.results.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center text-muted-foreground">
                     No income recorded yet.
                   </TableCell>
                 </TableRow>
               )}
-              {incomeQuery.data?.results.map((income) => (
+              {incomeQuery.data?.results.map((income, index) => (
                 <TableRow key={income.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{income.income_number}</TableCell>
                   <TableCell>{new Date(income.date).toLocaleDateString()}</TableCell>
                   <TableCell>{income.account_name}</TableCell>
@@ -98,6 +100,7 @@ export function TransactionsPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Expense #</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Account</TableHead>
@@ -110,20 +113,21 @@ export function TransactionsPage() {
             <TableBody>
               {expenseQuery.isLoading && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center text-muted-foreground">
                     Loading…
                   </TableCell>
                 </TableRow>
               )}
               {expenseQuery.data && expenseQuery.data.results.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center text-muted-foreground">
                     No expenses recorded yet.
                   </TableCell>
                 </TableRow>
               )}
-              {expenseQuery.data?.results.map((expense) => (
+              {expenseQuery.data?.results.map((expense, index) => (
                 <TableRow key={expense.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{expense.expense_number}</TableCell>
                   <TableCell>{new Date(expense.date).toLocaleDateString()}</TableCell>
                   <TableCell>{expense.account_name}</TableCell>

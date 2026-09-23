@@ -84,6 +84,7 @@ export function DocumentDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Version</TableHead>
                 <TableHead>Size</TableHead>
                 <TableHead>Notes</TableHead>
@@ -93,8 +94,9 @@ export function DocumentDetailPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {document.versions.map((version) => (
+              {document.versions.map((version, index) => (
                 <TableRow key={version.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">v{version.version_number}</TableCell>
                   <TableCell>{formatFileSize(version.file_size)}</TableCell>
                   <TableCell>{version.notes || '—'}</TableCell>

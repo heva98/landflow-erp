@@ -136,6 +136,7 @@ export function ContractsTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Contract #</TableHead>
               <TableHead>Title</TableHead>
               <TableHead>Type</TableHead>
@@ -147,16 +148,17 @@ export function ContractsTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">No contracts yet.</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">No contracts yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((contract) => (
+            {data?.results.map((contract, index) => (
               <TableRow key={contract.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{contract.contract_number}</TableCell>
                 <TableCell>{contract.title}</TableCell>
                 <TableCell>{CONTRACT_TYPE_LABELS[contract.contract_type]}</TableCell>

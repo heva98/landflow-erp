@@ -20,7 +20,7 @@ export function CustomersListPage() {
     search: search || undefined,
     customer_type: customerType === 'all' ? undefined : customerType,
   })
-  const columnCount = 4
+  const columnCount = 5
 
   return (
     <div className="flex flex-col gap-4">
@@ -62,6 +62,7 @@ export function CustomersListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Phone</TableHead>
@@ -90,12 +91,13 @@ export function CustomersListPage() {
                 </TableCell>
               </TableRow>
             )}
-            {data?.results.map((customer) => (
+            {data?.results.map((customer, index) => (
               <TableRow
                 key={customer.id}
                 className="cursor-pointer"
                 onClick={() => navigate(`/crm/customers/${customer.id}`)}
               >
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/crm/customers/${customer.id}`} className="hover:underline">
                     {customer.full_name}

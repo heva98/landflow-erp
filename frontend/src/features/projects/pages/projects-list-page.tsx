@@ -25,7 +25,7 @@ export function ProjectsListPage() {
     search: search || undefined,
     status: status === 'all' ? undefined : status,
   })
-  const columnCount = canViewFinancials ? 6 : 4
+  const columnCount = canViewFinancials ? 7 : 5
 
   return (
     <div className="flex flex-col gap-4">
@@ -67,6 +67,7 @@ export function ProjectsListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Location</TableHead>
               <TableHead>Status</TableHead>
@@ -101,8 +102,9 @@ export function ProjectsListPage() {
                 </TableCell>
               </TableRow>
             )}
-            {data?.results.map((project) => (
+            {data?.results.map((project, index) => (
               <TableRow key={project.id} className="cursor-pointer" onClick={() => navigate(`/projects/${project.id}`)}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/projects/${project.id}`} className="hover:underline">
                     {project.name}

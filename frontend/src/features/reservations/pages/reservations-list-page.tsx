@@ -21,7 +21,7 @@ export function ReservationsListPage() {
     status: status === 'all' ? undefined : status,
   })
   const cancelReservation = useCancelReservationMutation()
-  const columnCount = canManage ? 7 : 6
+  const columnCount = canManage ? 8 : 7
 
   return (
     <div className="flex flex-col gap-4">
@@ -49,6 +49,7 @@ export function ReservationsListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Plot</TableHead>
               <TableHead>Customer</TableHead>
               <TableHead>Status</TableHead>
@@ -80,8 +81,9 @@ export function ReservationsListPage() {
                 </TableCell>
               </TableRow>
             )}
-            {data?.results.map((reservation) => (
+            {data?.results.map((reservation, index) => (
               <TableRow key={reservation.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{reservation.plot_number}</TableCell>
                 <TableCell>{reservation.customer_name}</TableCell>
                 <TableCell>

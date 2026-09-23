@@ -34,6 +34,7 @@ export function RankingsPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Rank</TableHead>
               <TableHead>Agent</TableHead>
               <TableHead>Territory</TableHead>
@@ -44,16 +45,17 @@ export function RankingsPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">No active agents with commission yet.</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">No active agents with commission yet.</TableCell>
               </TableRow>
             )}
-            {data?.map((row) => (
+            {data?.map((row, index) => (
               <TableRow key={row.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-semibold text-foreground">#{row.rank}</TableCell>
                 <TableCell>{row.employee_name} <span className="text-muted-foreground">({row.agent_code})</span></TableCell>
                 <TableCell>{row.territory_name ?? '—'}</TableCell>

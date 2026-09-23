@@ -194,6 +194,7 @@ export function SurveyDirectoryPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">SN</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>License #</TableHead>
                   <TableHead>Contact</TableHead>
@@ -204,16 +205,17 @@ export function SurveyDirectoryPage() {
               <TableBody>
                 {companiesLoading && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground">Loading…</TableCell>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
                   </TableRow>
                 )}
                 {companies && companies.results.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground">No survey companies yet.</TableCell>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">No survey companies yet.</TableCell>
                   </TableRow>
                 )}
-                {companies?.results.map((company) => (
+                {companies?.results.map((company, index) => (
                   <TableRow key={company.id}>
+                    <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                     <TableCell className="font-medium text-foreground">{company.name}</TableCell>
                     <TableCell>{company.license_number || '—'}</TableCell>
                     <TableCell>{company.contact_person || '—'}</TableCell>
@@ -236,6 +238,7 @@ export function SurveyDirectoryPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">SN</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Company</TableHead>
                   <TableHead>License #</TableHead>
@@ -246,16 +249,17 @@ export function SurveyDirectoryPage() {
               <TableBody>
                 {surveyorsLoading && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground">Loading…</TableCell>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
                   </TableRow>
                 )}
                 {surveyors && surveyors.results.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground">No surveyors yet.</TableCell>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground">No surveyors yet.</TableCell>
                   </TableRow>
                 )}
-                {surveyors?.results.map((surveyor) => (
+                {surveyors?.results.map((surveyor, index) => (
                   <TableRow key={surveyor.id}>
+                    <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                     <TableCell className="font-medium text-foreground">{surveyor.full_name}</TableCell>
                     <TableCell>{surveyor.company_name}</TableCell>
                     <TableCell>{surveyor.license_number || '—'}</TableCell>

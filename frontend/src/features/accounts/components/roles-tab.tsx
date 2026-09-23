@@ -12,6 +12,7 @@ export function RolesTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Access</TableHead>
               <TableHead>Permissions</TableHead>
@@ -20,11 +21,12 @@ export function RolesTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground">Loading roles…</TableCell>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">Loading roles…</TableCell>
               </TableRow>
             )}
-            {data?.results.map((role) => (
+            {data?.results.map((role, index) => (
               <TableRow key={role.id}>
+                <TableCell className="align-top text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="align-top font-medium text-foreground">
                   <div>{role.name}</div>
                   {role.description && <div className="text-xs text-muted-foreground">{role.description}</div>}

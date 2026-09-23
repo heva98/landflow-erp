@@ -68,6 +68,7 @@ export function AcquisitionsListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Reference</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Location</TableHead>
@@ -79,31 +80,32 @@ export function AcquisitionsListPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   Loading acquisitions…
                 </TableCell>
               </TableRow>
             )}
             {isError && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-destructive">
+                <TableCell colSpan={7} className="text-center text-destructive">
                   Failed to load acquisitions.
                 </TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   No land acquisitions yet.
                 </TableCell>
               </TableRow>
             )}
-            {data?.results.map((acquisition) => (
+            {data?.results.map((acquisition, index) => (
               <TableRow
                 key={acquisition.id}
                 className="cursor-pointer"
                 onClick={() => navigate(`/acquisitions/${acquisition.id}`)}
               >
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/acquisitions/${acquisition.id}`} className="hover:underline">
                     {acquisition.reference_number}

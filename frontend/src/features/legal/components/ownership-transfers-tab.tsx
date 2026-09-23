@@ -85,6 +85,7 @@ export function OwnershipTransfersTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Transfer #</TableHead>
               <TableHead>Sale</TableHead>
               <TableHead>Plot</TableHead>
@@ -96,16 +97,17 @@ export function OwnershipTransfersTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">No ownership transfers yet.</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">No ownership transfers yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((transfer) => (
+            {data?.results.map((transfer, index) => (
               <TableRow key={transfer.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/legal/ownership-transfers/${transfer.id}`} className="hover:underline">
                     {transfer.transfer_number}

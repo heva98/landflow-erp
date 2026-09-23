@@ -60,6 +60,7 @@ export function AuditLogTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>When</TableHead>
               <TableHead>Actor</TableHead>
               <TableHead>Action</TableHead>
@@ -70,16 +71,17 @@ export function AuditLogTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">No audit log entries found.</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">No audit log entries found.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((entry) => (
+            {data?.results.map((entry, index) => (
               <TableRow key={entry.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="whitespace-nowrap text-muted-foreground">
                   {new Date(entry.created_at).toLocaleString()}
                 </TableCell>

@@ -110,6 +110,7 @@ export function DocumentTemplatesTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Status</TableHead>
@@ -118,16 +119,17 @@ export function DocumentTemplatesTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground">No templates yet.</TableCell>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">No templates yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((template) => (
+            {data?.results.map((template, index) => (
               <TableRow key={template.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{template.name}</TableCell>
                 <TableCell>{TEMPLATE_TYPE_LABELS[template.template_type]}</TableCell>
                 <TableCell>

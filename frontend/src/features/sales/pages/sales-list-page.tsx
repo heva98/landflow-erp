@@ -71,6 +71,7 @@ export function SalesListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Sale #</TableHead>
               <TableHead>Plot</TableHead>
               <TableHead>Customer</TableHead>
@@ -84,27 +85,28 @@ export function SalesListPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-muted-foreground">
+                <TableCell colSpan={9} className="text-center text-muted-foreground">
                   Loading sales…
                 </TableCell>
               </TableRow>
             )}
             {isError && (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-destructive">
+                <TableCell colSpan={9} className="text-center text-destructive">
                   Failed to load sales.
                 </TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-muted-foreground">
+                <TableCell colSpan={9} className="text-center text-muted-foreground">
                   No sales yet.
                 </TableCell>
               </TableRow>
             )}
-            {data?.results.map((sale) => (
+            {data?.results.map((sale, index) => (
               <TableRow key={sale.id} className="cursor-pointer">
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/sales/${sale.id}`}>{sale.sale_number}</Link>
                 </TableCell>

@@ -134,6 +134,7 @@ export function OwnershipTransferDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>National ID</TableHead>
                 <TableHead>Phone</TableHead>
@@ -142,13 +143,14 @@ export function OwnershipTransferDetailPage() {
             <TableBody>
               {transfer.witnesses.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center text-muted-foreground">
+                  <TableCell colSpan={4} className="text-center text-muted-foreground">
                     No witnesses recorded yet.
                   </TableCell>
                 </TableRow>
               )}
-              {transfer.witnesses.map((witness) => (
+              {transfer.witnesses.map((witness, index) => (
                 <TableRow key={witness.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{witness.full_name}</TableCell>
                   <TableCell>{witness.national_id || '—'}</TableCell>
                   <TableCell>{witness.phone || '—'}</TableCell>

@@ -45,6 +45,7 @@ export function ApprovalWorkflowsTab() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">SN</TableHead>
                     <TableHead>Order</TableHead>
                     <TableHead>Step</TableHead>
                     <TableHead>Approving role</TableHead>
@@ -54,11 +55,12 @@ export function ApprovalWorkflowsTab() {
                 <TableBody>
                   {workflow.steps.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center text-muted-foreground">No steps yet.</TableCell>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">No steps yet.</TableCell>
                     </TableRow>
                   )}
-                  {workflow.steps.map((step) => (
+                  {workflow.steps.map((step, index) => (
                     <TableRow key={step.id}>
+                      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                       <TableCell>{step.order}</TableCell>
                       <TableCell>{step.name || '—'}</TableCell>
                       <TableCell>{step.role_name}</TableCell>

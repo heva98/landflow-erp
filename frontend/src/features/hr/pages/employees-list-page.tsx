@@ -74,6 +74,7 @@ export function EmployeesListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Employee #</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Job title</TableHead>
@@ -84,21 +85,22 @@ export function EmployeesListPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">Loading employees…</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading employees…</TableCell>
               </TableRow>
             )}
             {isError && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-destructive">Failed to load employees.</TableCell>
+                <TableCell colSpan={6} className="text-center text-destructive">Failed to load employees.</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">No employees yet.</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">No employees yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((employee) => (
+            {data?.results.map((employee, index) => (
               <TableRow key={employee.id} className="cursor-pointer" onClick={() => navigate(`/hr/employees/${employee.id}`)}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/hr/employees/${employee.id}`} className="hover:underline">
                     {employee.employee_number}

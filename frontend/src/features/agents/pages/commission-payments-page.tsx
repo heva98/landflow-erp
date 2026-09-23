@@ -65,6 +65,7 @@ export function CommissionPaymentsPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Agent</TableHead>
               <TableHead>Sale</TableHead>
               <TableHead>Amount</TableHead>
@@ -76,16 +77,17 @@ export function CommissionPaymentsPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">No commission payments found.</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">No commission payments found.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((payment) => (
+            {data?.results.map((payment, index) => (
               <TableRow key={payment.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{payment.agent_name}</TableCell>
                 <TableCell>{payment.sale_number ?? '—'}</TableCell>
                 <TableCell>{formatTZS(payment.amount)}</TableCell>

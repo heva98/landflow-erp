@@ -25,7 +25,7 @@ export function PlotsListPage() {
     status: status === 'all' ? undefined : status,
     project: projectId === 'all' ? undefined : projectId,
   })
-  const columnCount = 6
+  const columnCount = 7
 
   return (
     <div className="flex flex-col gap-4">
@@ -80,6 +80,7 @@ export function PlotsListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Plot number</TableHead>
               <TableHead>Project</TableHead>
               <TableHead>Block / Street</TableHead>
@@ -110,8 +111,9 @@ export function PlotsListPage() {
                 </TableCell>
               </TableRow>
             )}
-            {data?.results.map((plot) => (
+            {data?.results.map((plot, index) => (
               <TableRow key={plot.id} className="cursor-pointer" onClick={() => navigate(`/plots/${plot.id}`)}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/plots/${plot.id}`} className="hover:underline">
                     {plot.plot_number}

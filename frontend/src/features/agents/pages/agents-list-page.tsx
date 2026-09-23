@@ -52,6 +52,7 @@ export function AgentsListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Agent code</TableHead>
               <TableHead>Employee</TableHead>
               <TableHead>Territory</TableHead>
@@ -62,21 +63,22 @@ export function AgentsListPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">Loading agents…</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading agents…</TableCell>
               </TableRow>
             )}
             {isError && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-destructive">Failed to load agents.</TableCell>
+                <TableCell colSpan={6} className="text-center text-destructive">Failed to load agents.</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">No agents yet.</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">No agents yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((agent) => (
+            {data?.results.map((agent, index) => (
               <TableRow key={agent.id} className="cursor-pointer" onClick={() => navigate(`/agents/${agent.id}`)}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">
                   <Link to={`/agents/${agent.id}`} className="hover:underline">
                     {agent.agent_code}

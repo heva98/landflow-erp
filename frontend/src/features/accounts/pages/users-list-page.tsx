@@ -96,6 +96,7 @@ export function UsersListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Role</TableHead>
@@ -106,21 +107,22 @@ export function UsersListPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">Loading users…</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading users…</TableCell>
               </TableRow>
             )}
             {isError && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-destructive">Failed to load users.</TableCell>
+                <TableCell colSpan={6} className="text-center text-destructive">Failed to load users.</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">No users yet.</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">No users yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((user) => (
+            {data?.results.map((user, index) => (
               <TableRow key={user.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{user.email}</TableCell>
                 <TableCell>{`${user.first_name} ${user.last_name}`.trim() || '—'}</TableCell>
                 <TableCell>{user.role?.name ?? '—'}</TableCell>

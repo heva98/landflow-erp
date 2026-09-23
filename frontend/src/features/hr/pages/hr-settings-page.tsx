@@ -23,6 +23,7 @@ function DepartmentsTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Manager</TableHead>
               <TableHead>Employees</TableHead>
@@ -32,16 +33,17 @@ function DepartmentsTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={5} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground">No departments yet.</TableCell>
+                <TableCell colSpan={5} className="text-center text-muted-foreground">No departments yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((department) => (
+            {data?.results.map((department, index) => (
               <TableRow key={department.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{department.name}</TableCell>
                 <TableCell>{department.manager_name ?? '—'}</TableCell>
                 <TableCell>{department.employee_count}</TableCell>
@@ -67,6 +69,7 @@ function LeaveTypesTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Default days/year</TableHead>
               <TableHead>Paid</TableHead>
@@ -75,16 +78,17 @@ function LeaveTypesTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-muted-foreground">No leave types yet.</TableCell>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">No leave types yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((leaveType) => (
+            {data?.results.map((leaveType, index) => (
               <TableRow key={leaveType.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{leaveType.name}</TableCell>
                 <TableCell>{leaveType.default_days_per_year}</TableCell>
                 <TableCell>{leaveType.is_paid ? 'Yes' : 'No'}</TableCell>

@@ -121,6 +121,7 @@ export function SurveyDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Number</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Condition</TableHead>
@@ -130,13 +131,14 @@ export function SurveyDetailPage() {
             <TableBody>
               {survey.beacons.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No beacons recorded yet.
                   </TableCell>
                 </TableRow>
               )}
-              {survey.beacons.map((beacon) => (
+              {survey.beacons.map((beacon, index) => (
                 <TableRow key={beacon.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{beacon.beacon_number}</TableCell>
                   <TableCell>{BEACON_TYPE_LABELS[beacon.beacon_type]}</TableCell>
                   <TableCell>{BEACON_CONDITION_LABELS[beacon.condition]}</TableCell>
@@ -159,6 +161,7 @@ export function SurveyDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Uploaded by</TableHead>
@@ -168,13 +171,14 @@ export function SurveyDetailPage() {
             <TableBody>
               {survey.documents.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No documents uploaded yet.
                   </TableCell>
                 </TableRow>
               )}
-              {survey.documents.map((document) => (
+              {survey.documents.map((document, index) => (
                 <TableRow key={document.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">
                     {SURVEY_DOCUMENT_TYPE_LABELS[document.document_type]}
                   </TableCell>

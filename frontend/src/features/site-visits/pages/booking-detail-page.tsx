@@ -20,9 +20,10 @@ function resolveUrl(path: string) {
   return path.startsWith('http') ? path : `${mediaOrigin}${path}`
 }
 
-function FollowUpRow({ bookingId, followUpId, dueDate, status, notes, assignedToName, canManage }: {
+function FollowUpRow({ bookingId, followUpId, index, dueDate, status, notes, assignedToName, canManage }: {
   bookingId: string
   followUpId: string
+  index: number
   dueDate: string
   status: 'pending' | 'done'
   notes: string
@@ -33,6 +34,7 @@ function FollowUpRow({ bookingId, followUpId, dueDate, status, notes, assignedTo
 
   return (
     <TableRow>
+      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
       <TableCell className="font-medium text-foreground">{dueDate}</TableCell>
       <TableCell>{notes || '—'}</TableCell>
       <TableCell>{assignedToName ?? '—'}</TableCell>
@@ -151,6 +153,7 @@ export function BookingDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Due date</TableHead>
                 <TableHead>Notes</TableHead>
                 <TableHead>Assigned to</TableHead>
@@ -161,16 +164,17 @@ export function BookingDetailPage() {
             <TableBody>
               {booking.follow_ups.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
                     No follow-ups yet.
                   </TableCell>
                 </TableRow>
               )}
-              {booking.follow_ups.map((followUp) => (
+              {booking.follow_ups.map((followUp, index) => (
                 <FollowUpRow
                   key={followUp.id}
                   bookingId={booking.id}
                   followUpId={followUp.id}
+                  index={index}
                   dueDate={followUp.due_date}
                   status={followUp.status}
                   notes={followUp.notes}

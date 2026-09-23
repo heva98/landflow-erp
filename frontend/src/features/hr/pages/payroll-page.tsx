@@ -62,6 +62,7 @@ export function PayrollPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Employee</TableHead>
               <TableHead>Period</TableHead>
               <TableHead>Net pay</TableHead>
@@ -72,16 +73,17 @@ export function PayrollPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">No payroll records found.</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground">No payroll records found.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((record) => (
+            {data?.results.map((record, index) => (
               <TableRow key={record.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{record.employee_name}</TableCell>
                 <TableCell>{formatDate(record.pay_period_start)} – {formatDate(record.pay_period_end)}</TableCell>
                 <TableCell>{formatTZS(record.net_pay)}</TableCell>

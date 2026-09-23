@@ -64,6 +64,7 @@ export function LeaveRequestsPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Employee</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Dates</TableHead>
@@ -75,16 +76,17 @@ export function LeaveRequestsPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">No leave requests found.</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">No leave requests found.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((request) => (
+            {data?.results.map((request, index) => (
               <TableRow key={request.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{request.employee_name}</TableCell>
                 <TableCell>{request.leave_type_name}</TableCell>
                 <TableCell>{formatDate(request.start_date)} – {formatDate(request.end_date)}</TableCell>

@@ -22,6 +22,7 @@ export function UpcomingPaymentsCard({ data }: { data: DashboardUpcomingPayments
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">SN</TableHead>
                   <TableHead>Customer</TableHead>
                   <TableHead>Plot</TableHead>
                   <TableHead>Due</TableHead>
@@ -32,6 +33,7 @@ export function UpcomingPaymentsCard({ data }: { data: DashboardUpcomingPayments
               <TableBody>
                 {data.rows.map((row, index) => (
                   <TableRow key={`${row.sale_number}-${index}`}>
+                    <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                     <TableCell>{row.customer}</TableCell>
                     <TableCell>
                       {row.project} · {row.plot_number}

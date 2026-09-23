@@ -73,6 +73,7 @@ export function PaymentPlansListPage() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Sale #</TableHead>
               <TableHead>Customer</TableHead>
               <TableHead>Status</TableHead>
@@ -84,29 +85,30 @@ export function PaymentPlansListPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   Loading payment plans…
                 </TableCell>
               </TableRow>
             )}
             {isError && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-destructive">
+                <TableCell colSpan={7} className="text-center text-destructive">
                   Failed to load payment plans.
                 </TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
                   No payment plans yet.
                 </TableCell>
               </TableRow>
             )}
-            {data?.results.map((plan) => {
+            {data?.results.map((plan, index) => {
               const paidCount = plan.installments.filter((installment) => installment.status === 'paid').length
               return (
                 <TableRow key={plan.id} className="cursor-pointer">
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">
                     <Link to={`/installments/${plan.id}`}>{plan.sale_number}</Link>
                   </TableCell>

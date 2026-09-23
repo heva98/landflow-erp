@@ -22,6 +22,7 @@ export function ReportTable<TRow>({ columns, rows, isLoading, isError, emptyMess
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-12">SN</TableHead>
             {columns.map((column) => (
               <TableHead key={String(column.key)} className={column.align === 'right' ? 'text-right' : undefined}>
                 {column.label}
@@ -32,21 +33,21 @@ export function ReportTable<TRow>({ columns, rows, isLoading, isError, emptyMess
         <TableBody>
           {isLoading && (
             <TableRow>
-              <TableCell colSpan={columns.length} className="text-center text-muted-foreground">
+              <TableCell colSpan={columns.length + 1} className="text-center text-muted-foreground">
                 Loading…
               </TableCell>
             </TableRow>
           )}
           {isError && (
             <TableRow>
-              <TableCell colSpan={columns.length} className="text-center text-destructive">
+              <TableCell colSpan={columns.length + 1} className="text-center text-destructive">
                 Failed to load report.
               </TableCell>
             </TableRow>
           )}
           {!isLoading && !isError && rows && rows.length === 0 && (
             <TableRow>
-              <TableCell colSpan={columns.length} className="text-center text-muted-foreground">
+              <TableCell colSpan={columns.length + 1} className="text-center text-muted-foreground">
                 {emptyMessage}
               </TableCell>
             </TableRow>
@@ -55,6 +56,7 @@ export function ReportTable<TRow>({ columns, rows, isLoading, isError, emptyMess
             !isError &&
             rows?.map((row, index) => (
               <TableRow key={getRowKey(row, index)}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 {columns.map((column) => (
                   <TableCell key={String(column.key)} className={column.align === 'right' ? 'text-right' : undefined}>
                     {column.render ? column.render(row) : String(row[column.key] ?? '')}

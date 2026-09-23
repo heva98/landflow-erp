@@ -132,6 +132,7 @@ export function EmployeeDetailPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">SN</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Check in</TableHead>
@@ -141,11 +142,12 @@ export function EmployeeDetailPage() {
                 <TableBody>
                   {attendance && attendance.results.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center text-muted-foreground">No attendance records yet.</TableCell>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">No attendance records yet.</TableCell>
                     </TableRow>
                   )}
-                  {attendance?.results.map((record) => (
+                  {attendance?.results.map((record, index) => (
                     <TableRow key={record.id}>
+                      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                       <TableCell>{formatDate(record.date)}</TableCell>
                       <TableCell>
                         <AttendanceStatusBadge status={record.status} />
@@ -170,6 +172,7 @@ export function EmployeeDetailPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">SN</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Dates</TableHead>
                     <TableHead>Days</TableHead>
@@ -179,11 +182,12 @@ export function EmployeeDetailPage() {
                 <TableBody>
                   {leaveRequests && leaveRequests.results.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center text-muted-foreground">No leave requests yet.</TableCell>
+                      <TableCell colSpan={5} className="text-center text-muted-foreground">No leave requests yet.</TableCell>
                     </TableRow>
                   )}
-                  {leaveRequests?.results.map((request) => (
+                  {leaveRequests?.results.map((request, index) => (
                     <TableRow key={request.id}>
+                      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                       <TableCell>{request.leave_type_name}</TableCell>
                       <TableCell>{formatDate(request.start_date)} – {formatDate(request.end_date)}</TableCell>
                       <TableCell>{request.requested_days}</TableCell>
@@ -208,6 +212,7 @@ export function EmployeeDetailPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">SN</TableHead>
                     <TableHead>Period</TableHead>
                     <TableHead>Rating</TableHead>
                     <TableHead>Reviewer</TableHead>
@@ -216,11 +221,12 @@ export function EmployeeDetailPage() {
                 <TableBody>
                   {reviews && reviews.results.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={3} className="text-center text-muted-foreground">No reviews yet.</TableCell>
+                      <TableCell colSpan={4} className="text-center text-muted-foreground">No reviews yet.</TableCell>
                     </TableRow>
                   )}
-                  {reviews?.results.map((review) => (
+                  {reviews?.results.map((review, index) => (
                     <TableRow key={review.id}>
+                      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                       <TableCell>{formatDate(review.review_period_start)} – {formatDate(review.review_period_end)}</TableCell>
                       <TableCell>{review.rating} / 5</TableCell>
                       <TableCell>{review.reviewer_name ?? '—'}</TableCell>
@@ -242,6 +248,7 @@ export function EmployeeDetailPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">SN</TableHead>
                     <TableHead>Period</TableHead>
                     <TableHead>Net pay</TableHead>
                     <TableHead>Status</TableHead>
@@ -250,11 +257,12 @@ export function EmployeeDetailPage() {
                 <TableBody>
                   {payroll && payroll.results.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={3} className="text-center text-muted-foreground">No payroll records yet.</TableCell>
+                      <TableCell colSpan={4} className="text-center text-muted-foreground">No payroll records yet.</TableCell>
                     </TableRow>
                   )}
-                  {payroll?.results.map((record) => (
+                  {payroll?.results.map((record, index) => (
                     <TableRow key={record.id}>
+                      <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                       <TableCell>{formatDate(record.pay_period_start)} – {formatDate(record.pay_period_end)}</TableCell>
                       <TableCell>{formatTZS(record.net_pay)}</TableCell>
                       <TableCell>

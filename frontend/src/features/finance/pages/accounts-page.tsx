@@ -30,6 +30,7 @@ export function AccountsPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Kind</TableHead>
                 <TableHead>Bank</TableHead>
@@ -40,20 +41,21 @@ export function AccountsPage() {
             <TableBody>
               {cashBankLoading && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
                     Loading…
                   </TableCell>
                 </TableRow>
               )}
               {cashBankAccounts && cashBankAccounts.results.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
                     No cash or bank accounts yet.
                   </TableCell>
                 </TableRow>
               )}
-              {cashBankAccounts?.results.map((account) => (
+              {cashBankAccounts?.results.map((account, index) => (
                 <TableRow key={account.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{account.name}</TableCell>
                   <TableCell>
                     <Badge variant="secondary">{CASH_BANK_KIND_LABELS[account.kind]}</Badge>
@@ -77,6 +79,7 @@ export function AccountsPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Code</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Type</TableHead>
@@ -86,20 +89,21 @@ export function AccountsPage() {
             <TableBody>
               {accountsLoading && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     Loading…
                   </TableCell>
                 </TableRow>
               )}
               {accounts && accounts.results.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No accounts yet.
                   </TableCell>
                 </TableRow>
               )}
-              {accounts?.results.map((account) => (
+              {accounts?.results.map((account, index) => (
                 <TableRow key={account.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{account.code}</TableCell>
                   <TableCell>{account.name}</TableCell>
                   <TableCell>

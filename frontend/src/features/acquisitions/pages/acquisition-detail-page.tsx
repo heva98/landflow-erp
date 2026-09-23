@@ -192,6 +192,7 @@ export function AcquisitionDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>National ID</TableHead>
                 <TableHead>Phone</TableHead>
@@ -201,13 +202,14 @@ export function AcquisitionDetailPage() {
             <TableBody>
               {acquisition.owners.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No owners recorded yet.
                   </TableCell>
                 </TableRow>
               )}
-              {acquisition.owners.map((owner) => (
+              {acquisition.owners.map((owner, index) => (
                 <TableRow key={owner.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{owner.full_name}</TableCell>
                   <TableCell>{owner.national_id || '—'}</TableCell>
                   <TableCell>{owner.phone || '—'}</TableCell>
@@ -228,6 +230,7 @@ export function AcquisitionDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Offered</TableHead>
                 <TableHead>Counter offer</TableHead>
@@ -238,13 +241,14 @@ export function AcquisitionDetailPage() {
             <TableBody>
               {acquisition.negotiations.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
                     No negotiations logged yet.
                   </TableCell>
                 </TableRow>
               )}
-              {acquisition.negotiations.map((negotiation) => (
+              {acquisition.negotiations.map((negotiation, index) => (
                 <TableRow key={negotiation.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{formatDate(negotiation.negotiated_on)}</TableCell>
                   <TableCell>{negotiation.offered_price ? formatTZS(negotiation.offered_price) : '—'}</TableCell>
                   <TableCell>
@@ -268,6 +272,7 @@ export function AcquisitionDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Amount</TableHead>
@@ -277,13 +282,14 @@ export function AcquisitionDetailPage() {
             <TableBody>
               {acquisition.purchase_costs.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No purchase costs recorded yet.
                   </TableCell>
                 </TableRow>
               )}
-              {acquisition.purchase_costs.map((cost) => (
+              {acquisition.purchase_costs.map((cost, index) => (
                 <TableRow key={cost.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{COST_TYPE_LABELS[cost.cost_type]}</TableCell>
                   <TableCell>{cost.description || '—'}</TableCell>
                   <TableCell>{formatTZS(cost.amount)}</TableCell>
@@ -304,6 +310,7 @@ export function AcquisitionDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Uploaded by</TableHead>
@@ -313,13 +320,14 @@ export function AcquisitionDetailPage() {
             <TableBody>
               {acquisition.attachments.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No attachments uploaded yet.
                   </TableCell>
                 </TableRow>
               )}
-              {acquisition.attachments.map((attachment) => (
+              {acquisition.attachments.map((attachment, index) => (
                 <TableRow key={attachment.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">
                     {DOCUMENT_TYPE_LABELS[attachment.document_type]}
                   </TableCell>

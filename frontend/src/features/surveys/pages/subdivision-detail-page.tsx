@@ -93,6 +93,7 @@ export function SubdivisionDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Plot number</TableHead>
                 <TableHead>Block</TableHead>
                 <TableHead>Area (sqm)</TableHead>
@@ -104,13 +105,14 @@ export function SubdivisionDetailPage() {
             <TableBody>
               {subdivision.planned_plots.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center text-muted-foreground">
                     No planned plots yet.
                   </TableCell>
                 </TableRow>
               )}
-              {subdivision.planned_plots.map((plot) => (
+              {subdivision.planned_plots.map((plot, index) => (
                 <TableRow key={plot.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{plot.plot_number}</TableCell>
                   <TableCell>{plot.block || '—'}</TableCell>
                   <TableCell>{Number(plot.area_sqm).toLocaleString()}</TableCell>
@@ -148,6 +150,7 @@ export function SubdivisionDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Width (m)</TableHead>
@@ -157,13 +160,14 @@ export function SubdivisionDetailPage() {
             <TableBody>
               {subdivision.roads.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No road reserves yet.
                   </TableCell>
                 </TableRow>
               )}
-              {subdivision.roads.map((road) => (
+              {subdivision.roads.map((road, index) => (
                 <TableRow key={road.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{road.name}</TableCell>
                   <TableCell>{ROAD_TYPE_LABELS[road.road_type]}</TableCell>
                   <TableCell>{road.width_m ?? '—'}</TableCell>
@@ -184,6 +188,7 @@ export function SubdivisionDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Area (sqm)</TableHead>
@@ -192,13 +197,14 @@ export function SubdivisionDetailPage() {
             <TableBody>
               {subdivision.utilities.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center text-muted-foreground">
+                  <TableCell colSpan={4} className="text-center text-muted-foreground">
                     No utility reserves yet.
                   </TableCell>
                 </TableRow>
               )}
-              {subdivision.utilities.map((utility) => (
+              {subdivision.utilities.map((utility, index) => (
                 <TableRow key={utility.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{UTILITY_TYPE_LABELS[utility.utility_type]}</TableCell>
                   <TableCell>{utility.description || '—'}</TableCell>
                   <TableCell>{utility.area_sqm ?? '—'}</TableCell>

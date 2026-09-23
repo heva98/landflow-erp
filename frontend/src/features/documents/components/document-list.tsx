@@ -16,6 +16,7 @@ export function DocumentList({ documents, emptyLabel = 'No documents yet.' }: { 
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead className="w-12">SN</TableHead>
           <TableHead>Title</TableHead>
           <TableHead>Type</TableHead>
           <TableHead>Category</TableHead>
@@ -29,13 +30,14 @@ export function DocumentList({ documents, emptyLabel = 'No documents yet.' }: { 
       <TableBody>
         {documents.length === 0 && (
           <TableRow>
-            <TableCell colSpan={8} className="text-center text-muted-foreground">
+            <TableCell colSpan={9} className="text-center text-muted-foreground">
               {emptyLabel}
             </TableCell>
           </TableRow>
         )}
-        {documents.map((document) => (
+        {documents.map((document, index) => (
           <TableRow key={document.id}>
+            <TableCell className="text-muted-foreground">{index + 1}</TableCell>
             <TableCell className="font-medium text-foreground">
               <Link to={`/documents/${document.id}`} className="hover:underline">
                 {document.title}

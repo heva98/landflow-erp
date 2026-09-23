@@ -131,6 +131,7 @@ export function TitleDeedsTab() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-12">SN</TableHead>
               <TableHead>Sale</TableHead>
               <TableHead>Deed number</TableHead>
               <TableHead>Status</TableHead>
@@ -142,16 +143,17 @@ export function TitleDeedsTab() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">Loading…</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">Loading…</TableCell>
               </TableRow>
             )}
             {data && data.results.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">No title deeds yet.</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">No title deeds yet.</TableCell>
               </TableRow>
             )}
-            {data?.results.map((deed) => (
+            {data?.results.map((deed, index) => (
               <TableRow key={deed.id}>
+                <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                 <TableCell className="font-medium text-foreground">{deed.sale_number}</TableCell>
                 <TableCell>{deed.deed_number || '—'}</TableCell>
                 <TableCell>

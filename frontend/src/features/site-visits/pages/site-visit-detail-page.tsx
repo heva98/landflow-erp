@@ -92,6 +92,7 @@ export function SiteVisitDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Lead</TableHead>
                 <TableHead>Guests</TableHead>
                 <TableHead>Status</TableHead>
@@ -102,13 +103,14 @@ export function SiteVisitDetailPage() {
             <TableBody>
               {visit.bookings.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground">
                     No bookings yet.
                   </TableCell>
                 </TableRow>
               )}
-              {visit.bookings.map((booking) => (
+              {visit.bookings.map((booking, index) => (
                 <TableRow key={booking.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">
                     <Link to={`/site-visits/bookings/${booking.id}`} className="hover:underline">
                       {booking.lead_name}

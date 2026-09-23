@@ -96,6 +96,7 @@ export function PaymentPlanDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>#</TableHead>
                 <TableHead>Due date</TableHead>
                 <TableHead>Amount due</TableHead>
@@ -107,8 +108,9 @@ export function PaymentPlanDetailPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {plan.installments.map((installment) => (
+              {plan.installments.map((installment, index) => (
                 <TableRow key={installment.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{installment.sequence}</TableCell>
                   <TableCell>{new Date(installment.due_date).toLocaleDateString()}</TableCell>
                   <TableCell>{formatTZS(installment.amount_due)}</TableCell>
@@ -138,6 +140,7 @@ export function PaymentPlanDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Receipt #</TableHead>
                 <TableHead>Installment</TableHead>
                 <TableHead>Amount</TableHead>
@@ -149,13 +152,14 @@ export function PaymentPlanDetailPage() {
             <TableBody>
               {ledger.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center text-muted-foreground">
                     No payments recorded yet.
                   </TableCell>
                 </TableRow>
               )}
-              {ledger.map((payment) => (
+              {ledger.map((payment, index) => (
                 <TableRow key={payment.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{payment.receipt_number}</TableCell>
                   <TableCell>#{payment.sequence}</TableCell>
                   <TableCell>{formatTZS(payment.amount)}</TableCell>

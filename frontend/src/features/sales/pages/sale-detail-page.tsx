@@ -143,6 +143,7 @@ export function SaleDetailPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-12">SN</TableHead>
                 <TableHead>Receipt #</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Method</TableHead>
@@ -151,8 +152,9 @@ export function SaleDetailPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sale.receipts.map((receipt) => (
+              {sale.receipts.map((receipt, index) => (
                 <TableRow key={receipt.id}>
+                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                   <TableCell className="font-medium text-foreground">{receipt.receipt_number}</TableCell>
                   <TableCell>{formatTZS(receipt.amount)}</TableCell>
                   <TableCell>{PAYMENT_METHOD_LABELS[receipt.payment_method]}</TableCell>
