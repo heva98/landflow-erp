@@ -25,7 +25,6 @@ UPCOMING_PAYMENT_WINDOW_DAYS = 30
 UPCOMING_PAYMENT_ROW_LIMIT = 10
 MONTHLY_SALES_MONTHS = 12
 TOP_AGENTS_LIMIT = 5
-RECENT_ACTIVITY_LIMIT = 15
 
 
 def _decimal(value):
@@ -208,26 +207,6 @@ def _top_agents(user):
     ]
 
 
-def _recent_activity(user):
-    if not user.has_perm('core.view_auditlog'):
-        return None
-
-    from apps.core.models import AuditLog
-
-    logs = AuditLog.objects.select_related('content_type', 'actor').order_by('-created_at')[:RECENT_ACTIVITY_LIMIT]
-    return [
-        {
-            'id': str(log.id),
-            'action': log.get_action_display(),
-            'model': log.content_type.model if log.content_type else '',
-            'object_repr': log.object_repr,
-            'actor': log.actor.get_full_name() if log.actor else 'System',
-            'created_at': log.created_at,
-        }
-        for log in logs
-    ]
-
-
 def dashboard_summary(user):
     return {
         'revenue': _revenue_section(user),
@@ -238,5 +217,4 @@ def dashboard_summary(user):
         'upcoming_payments': _upcoming_payments(user),
         'monthly_sales': _monthly_sales(user),
         'top_agents': _top_agents(user),
-        'recent_activity': _recent_activity(user),
     }

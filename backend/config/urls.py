@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/v1/', include('apps.accounts.urls')),
     path('api/v1/', include('apps.projects.urls')),
     path('api/v1/', include('apps.acquisitions.urls')),
+    path('api/v1/', include('apps.surveys.urls')),
     path('api/v1/', include('apps.plots.urls')),
     path('api/v1/', include('apps.crm.urls')),
     path('api/v1/', include('apps.reservations.urls')),
@@ -31,6 +32,14 @@ urlpatterns = [
     path('api/v1/', include('apps.installments.urls')),
     path('api/v1/', include('apps.finance.urls')),
     path('api/v1/', include('apps.reports.urls')),
+    path('api/v1/', include('apps.documents.urls')),
+    path('api/v1/', include('apps.legal.urls')),
+    path('api/v1/', include('apps.site_visits.urls')),
+    path('api/v1/', include('apps.hr.urls')),
+    path('api/v1/', include('apps.agents.urls')),
+    path('api/v1/', include('apps.inventory.urls')),
+    path('api/v1/', include('apps.core.urls')),
+    path('api/v1/', include('apps.administration.urls')),
 ]
 
 if settings.DEBUG:

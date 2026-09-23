@@ -46,15 +46,6 @@ export interface TopAgent {
   total: string
 }
 
-export interface RecentActivityEntry {
-  id: string
-  action: string
-  model: string
-  object_repr: string
-  actor: string
-  created_at: string
-}
-
 export interface DashboardSummary {
   revenue: DashboardRevenue | null
   plots: DashboardPlots | null
@@ -64,5 +55,4 @@ export interface DashboardSummary {
   upcoming_payments: DashboardUpcomingPayments | null
   monthly_sales: MonthlySalesPoint[] | null
   top_agents: TopAgent[] | null
-  recent_activity: RecentActivityEntry[] | null
 }

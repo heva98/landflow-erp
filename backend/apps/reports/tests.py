@@ -341,8 +341,6 @@ def test_dashboard_full_access(api_client, administrator, sale, payment_plan, le
     # Neither fixture sale has `sold_by` set.
     assert data['top_agents'] == []
 
-    assert data['recent_activity'] is not None and len(data['recent_activity']) > 0
-
 
 @pytest.mark.django_db
 def test_dashboard_hides_sections_without_permission(api_client, site_manager, sale, payment_plan, lead):
@@ -354,7 +352,6 @@ def test_dashboard_hides_sections_without_permission(api_client, site_manager, s
     # Site Manager has view access to plots/sales/installments but not crm or finance.
     assert data['revenue'] is None
     assert data['leads'] is None
-    assert data['recent_activity'] is None
     assert data['plots'] is not None
     assert data['pending_transfers'] is not None
     assert data['outstanding_balances'] is not None

@@ -20,11 +20,22 @@ from .models import Notification
 
 def send_notification(*, notification_type, content_object, recipient_email, context, recipient_customer=None):
     """
-    Returns the Notification, or None if one was already sent previously for
-    this (notification_type, content_object) and this call was skipped.
-    Never raises on send failure — the failure is recorded on the
-    Notification instead so the caller can just count what got sent.
+    `recipient_email` is a single address or a list — e.g. every Legal
+    Officer, for an ownership-transfer alert. One Notification row records
+    the whole send (its uniqueness key doesn't include the recipient), so a
+    second call with a different recipient list for the same source object
+    still just finds the existing SENT row and skips.
+
+    Returns the Notification, or None if there was nothing to send to, or one
+    was already sent previously for this (notification_type, content_object)
+    and this call was skipped. Never raises on send failure — the failure is
+    recorded on the Notification instead so the caller can just count what
+    got sent.
     """
+    recipients = list(recipient_email) if isinstance(recipient_email, (list, tuple)) else [recipient_email]
+    if not recipients:
+        return None
+
     content_type = ContentType.objects.get_for_model(content_object)
     notification, created = Notification.objects.get_or_create(
         notification_type=notification_type,
@@ -32,7 +43,7 @@ def send_notification(*, notification_type, content_object, recipient_email, con
         object_id=str(content_object.pk),
         defaults={
             'channel': Notification.Channel.EMAIL,
-            'recipient_email': recipient_email,
+            'recipient_email': ', '.join(recipients),
             'recipient_customer': recipient_customer,
         },
     )
@@ -42,13 +53,13 @@ def send_notification(*, notification_type, content_object, recipient_email, con
     subject = render_to_string(f'notifications/emails/{notification_type}_subject.txt', context).strip()
     body = render_to_string(f'notifications/emails/{notification_type}_body.txt', context)
 
-    notification.recipient_email = recipient_email
+    notification.recipient_email = ', '.join(recipients)
     notification.recipient_customer = recipient_customer
     notification.subject = subject
     notification.body = body
 
     try:
-        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [recipient_email], fail_silently=False)
+        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipients, fail_silently=False)
     except Exception as exc:
         notification.status = Notification.Status.FAILED
         notification.error_message = str(exc)

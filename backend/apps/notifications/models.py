@@ -15,6 +15,7 @@ class Notification(BaseModel):
     class Type(models.TextChoices):
         INSTALLMENT_DUE_REMINDER = 'installment_due_reminder', 'Installment Due Reminder'
         INSTALLMENT_OVERDUE_ALERT = 'installment_overdue_alert', 'Installment Overdue Alert'
+        OWNERSHIP_TRANSFER_COMPLETED = 'ownership_transfer_completed', 'Ownership Transfer Completed'
 
     class Status(models.TextChoices):
         PENDING = 'pending', 'Pending'

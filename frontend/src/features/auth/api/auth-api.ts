@@ -11,3 +11,7 @@ export async function fetchMe(): Promise<Me> {
   const response = await apiClient.get<Me>('/me/')
   return response.data
 }
+
+export async function logout(refreshToken: string | null): Promise<void> {
+  await apiClient.post('/auth/logout/', { refresh: refreshToken })
+}

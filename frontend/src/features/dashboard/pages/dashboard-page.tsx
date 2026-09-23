@@ -1,7 +1,6 @@
 import { useDashboardQuery } from '../hooks/use-dashboard'
 import { KpiGrid } from '../components/kpi-grid'
 import { MonthlySalesChart } from '../components/monthly-sales-chart'
-import { RecentActivityCard } from '../components/recent-activity-card'
 import { TopAgentsCard } from '../components/top-agents-card'
 import { UpcomingPaymentsCard } from '../components/upcoming-payments-card'
 
@@ -34,8 +33,7 @@ export function DashboardPage() {
     data.outstanding_balances !== null ||
     data.monthly_sales ||
     data.top_agents ||
-    data.upcoming_payments ||
-    data.recent_activity
+    data.upcoming_payments
 
   return (
     <div className="flex flex-col gap-6">
@@ -55,8 +53,6 @@ export function DashboardPage() {
               {data.upcoming_payments && <UpcomingPaymentsCard data={data.upcoming_payments} />}
             </div>
           )}
-
-          {data.recent_activity && <RecentActivityCard entries={data.recent_activity} />}
         </>
       )}
     </div>

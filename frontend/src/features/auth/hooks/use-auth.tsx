@@ -3,7 +3,7 @@ import { createContext, useContext, useState, type ReactNode } from 'react'
 
 import { authStorage } from '@/lib/auth-storage'
 
-import { fetchMe, login as loginRequest } from '../api/auth-api'
+import { fetchMe, login as loginRequest, logout as logoutRequest } from '../api/auth-api'
 import type { LoginCredentials, Me } from '../types'
 
 interface AuthContextValue {
@@ -11,7 +11,7 @@ interface AuthContextValue {
   isLoading: boolean
   isAuthenticated: boolean
   login: (credentials: LoginCredentials) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -37,7 +37,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await queryClient.invalidateQueries({ queryKey: ['me'] })
   }
 
-  function logout() {
+  async function logout() {
+    try {
+      await logoutRequest(authStorage.getRefreshToken())
+    } catch {
+      // Best-effort — always clear local session state regardless.
+    }
     authStorage.clear()
     setHasToken(false)
     queryClient.removeQueries({ queryKey: ['me'] })
